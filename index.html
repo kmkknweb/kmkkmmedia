@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+I'll<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -378,18 +378,17 @@
   </div>
 
 
-  <button id="soundBtn" class="sound-btn" type="button" aria-label="เปิดหรือปิดเสียง" onclick="toggleSound()">🔇</button>
-  <div id="soundHint" class="sound-hint">แตะที่หน้าจอครั้งแรกเพื่อเริ่มเสียงบรรยากาศ</div>
   <audio id="bgSound" loop preload="auto">
-    <source src="audio/bg.mp3" type="audio/mpeg">
-  </audio>
+  <source src="audio/bg.mp3" type="audio/mpeg">
+</audio>
+
+<button id="soundBtn" class="sound-btn" type="button">🔇</button>
+  <div id="soundHint" class="sound-hint">แตะที่หน้าจอครั้งแรกเพื่อเริ่มเสียงบรรยากาศ</div>
+  
 
   <div class="footer">
     <p>ศาลเจ้าปึงเถ่ากงม่าขอนแก่น<br>ก่อตั้ง พ.ศ. 2504 · สมาคมปึงเถ่ากงม่าขอนแก่น พ.ศ. 2543</p>
   </div>
-
-</div>
-
 
 <script>
 const pc = document.getElementById('particles');
@@ -404,46 +403,42 @@ for (let i = 0; i < 14; i++) {
 
 const bgSound = document.getElementById('bgSound');
 const soundBtn = document.getElementById('soundBtn');
-const soundHint = document.getElementById('soundHint');
-let isPlaying = false;
-let audioReady = false;
 
-function updateSoundIcon() {
-  soundBtn.textContent = isPlaying ? '🔊' : '🔇';
+bgSound.volume = 0.35;
+
+function updateSoundButton() {
+  soundBtn.textContent = bgSound.paused ? '🔇' : '🔊';
 }
 
-function startBgSound() {
-  if (audioReady) return;
-  bgSound.volume = 0.35;
-  bgSound.play().then(() => {
-    isPlaying = true;
-    audioReady = true;
-    updateSoundIcon();
-    if (soundHint) soundHint.style.display = 'none';
-  }).catch(() => {});
-}
-
-function toggleSound() {
-  if (!audioReady) {
-    startBgSound();
-    return;
+soundBtn.addEventListener('click', async function () {
+  try {
+    if (bgSound.paused) {
+      await bgSound.play();
+    } else {
+      bgSound.pause();
+    }
+    updateSoundButton();
+  } catch (err) {
+    console.log('play error:', err);
+    alert('ยังเปิดเสียงไม่ได้ ลองเปิดผ่าน Chrome หรือแตะหน้าจอก่อน 1 ครั้ง');
   }
-  if (isPlaying) {
-    bgSound.pause();
-    isPlaying = false;
-  } else {
-    bgSound.play().then(() => {
-      isPlaying = true;
-    }).catch(() => {});
-  }
-  updateSoundIcon();
-}
+});
 
-document.addEventListener('click', startBgSound, { once: true });
-document.addEventListener('touchstart', startBgSound, { once: true });
+document.addEventListener('click', async function firstTapStart() {
+  try {
+    if (bgSound.paused) {
+      await bgSound.play();
+      updateSoundButton();
+    }
+  } catch (err) {}
+  document.removeEventListener('click', firstTapStart);
+}, { once: true });
 
-updateSoundIcon();
-</script>
+updateSoundButton();
+                                </script>
+
+
+ 
 
 </body>
 </html>

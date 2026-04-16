@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>เทพเจ้าไฉ่ซิงเอี้ย | ศาลเจ้าปึงเถ่ากงม่าขอนแก่น</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@300;400;600;700&family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --gold:#C8901A; --gold-light:#E8B84B; --gold-dim:#7a5510;
+    --brown-deep:#5C2E00; --ink:#1c0e00; --ink-mid:#2e1800;
+    --ink-light:#3d2200; --cream:#F5E6C8; --cream-dim:#C9A96E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{background:var(--ink);font-family:"Noto Sans Thai",sans-serif;color:var(--cream);min-height:100vh;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 120% 50% at 50% 0%,#7a3d0018 0%,transparent 60%);pointer-events:none}
+  .page{position:relative;z-index:1;padding-bottom:100px}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;padding:12px 16px 0;font-size:13px;color:var(--cream-dim);text-decoration:none}
+  .back-btn svg{width:16px;height:16px;fill:var(--cream-dim)}
+  .title-header{text-align:center;padding:24px 20px 16px}
+  .title-zh{font-size:12px;color:var(--cream-dim);letter-spacing:4px;margin-bottom:6px}
+  .title-th{font-family:"Noto Serif Thai",serif;font-size:24px;font-weight:700;color:var(--gold-light);text-shadow:0 0 30px #C8901A40;letter-spacing:1px}
+  .title-role{font-size:13px;color:var(--cream-dim);margin-top:5px}
+  .title-line{height:1px;margin:14px auto 0;width:80%;background:linear-gradient(to right,transparent,var(--gold-dim),transparent)}
+  .deity-single{display:flex;justify-content:center;align-items:flex-start;padding:24px 20px 16px}
+  .deity-item{display:flex;flex-direction:column;align-items:center;gap:10px;max-width:220px}
+  .deity-circle-wrap{position:relative;width:148px;height:148px}
+  .deity-ring-outer{position:absolute;inset:-7px;border-radius:50%;border:1px solid #C8901A45;animation:spin-slow 22s linear infinite}
+  .deity-ring-outer::before{content:"";position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:var(--gold)}
+  .deity-ring-inner{position:absolute;inset:-1px;border-radius:50%;border:1.5px solid #C8901A65}
+  .deity-glow{position:absolute;inset:-18px;border-radius:50%;background:radial-gradient(circle,#C8901A15,transparent 65%);animation:breathe 3s ease-in-out infinite}
+  .deity-circle{width:148px;height:148px;border-radius:50%;overflow:hidden;border:2px solid var(--gold-dim);background:var(--ink-light);position:relative;z-index:1}
+  .deity-circle img{width:100%;height:100%;object-fit:cover;object-position:center top}
+  .deity-name-th{font-family:"Noto Serif Thai",serif;font-size:16px;font-weight:600;color:var(--gold-light);text-align:center;line-height:1.5}
+  .deity-name-zh{font-size:11px;color:var(--cream-dim);text-align:center;letter-spacing:2px;margin-top:-3px}
+  .divider{display:flex;align-items:center;gap:10px;margin:4px 24px 18px}
+  .divider::before{content:"";flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-dim))}
+  .divider::after{content:"";flex:1;height:1px;background:linear-gradient(to left,transparent,var(--gold-dim))}
+  .divider span{color:var(--gold);font-size:12px}
+  .audio-section{margin:0 16px 18px;background:var(--ink-light);border:1px solid var(--gold-dim);border-radius:14px;padding:14px}
+  .audio-label{font-size:10px;color:var(--cream-dim);letter-spacing:2px;margin-bottom:10px}
+  .audio-controls{display:flex;align-items:center;gap:12px}
+  .play-btn{width:44px;height:44px;border-radius:50%;background:var(--brown-deep);border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+  .play-btn:active{transform:scale(0.92)}
+  .play-btn svg{width:16px;height:16px;fill:var(--gold)}
+  .audio-info{flex:1}
+  .audio-title{font-size:13px;color:var(--cream);font-weight:500}
+  .audio-time{font-size:11px;color:var(--cream-dim);margin-top:2px}
+  .progress-bar{width:100%;height:3px;background:#ffffff18;border-radius:2px;margin-top:10px;cursor:pointer}
+  .progress-fill{height:100%;background:var(--gold);border-radius:2px;width:0%;transition:width .3s}
+  .bottom-nav{position:sticky;bottom:0;z-index:10;background:#1c0e00ee;border-top:1px solid var(--gold-dim);display:flex;backdrop-filter:blur(8px)}
+  .nav-btn{flex:1;padding:11px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--gold-dim);transition:color .2s}
+  .nav-btn.active{color:var(--gold-light)}
+  .nav-btn svg{width:20px;height:20px;fill:currentColor}
+  .nav-btn span{font-size:10px}
+  .page-section{display:none}
+  .page-section.active{display:block}
+  .section{margin:0 16px 14px;background:var(--ink-mid);border:1px solid #5a3a0045;border-radius:14px;padding:16px}
+  .section h2{font-family:"Noto Serif Thai",serif;font-size:15px;font-weight:600;color:var(--gold-light);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .section h2::before{content:"";width:3px;height:15px;background:var(--gold);border-radius:2px;flex-shrink:0}
+  .section p{font-size:13px;line-height:1.9;color:var(--cream);opacity:.88}
+  .hl{color:var(--gold-light);font-weight:500}
+  .bless-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+  .bless-item{background:#3d150050;border:1px solid #7a551040;border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px}
+  .bless-icon{font-size:18px;flex-shrink:0}
+  .bless-text{font-size:12px;color:var(--cream);line-height:1.4}
+  .ritual-list{list-style:none}
+  .ritual-list li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #5a3a0030;font-size:13px;line-height:1.7;color:var(--cream);opacity:.88}
+  .ritual-list li:last-child{border-bottom:none}
+  .step-num{width:22px;height:22px;border-radius:50%;background:var(--brown-deep);border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold);flex-shrink:0;margin-top:1px}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{background:#3d150050;border:1px solid #7a551040;border-radius:16px;padding:4px 11px;font-size:12px;color:var(--cream-dim)}
+  .date-stack{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+  .date-badge{display:inline-flex;align-items:center;gap:6px;background:var(--brown-deep);border:1px solid var(--gold);border-radius:20px;padding:5px 13px;font-size:12px;color:var(--gold-light);margin-top:8px}
+  .particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .p{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--gold);opacity:0;animation:float-up var(--dur) ease-in infinite var(--delay);left:var(--x);bottom:0}
+  @keyframes breathe{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+  @keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes float-up{0%{opacity:0;transform:translateY(0)}20%{opacity:.5}100%{opacity:0;transform:translateY(-100px)}}
+  @keyframes fade-in-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  .fi1{animation:fade-in-up .5s 0s both}.fi2{animation:fade-in-up .5s .1s both}.fi3{animation:fade-in-up .5s .2s both}.fi4{animation:fade-in-up .5s .3s both}
+
+</style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<div class="page">
+  <a class="back-btn" href="index.html">
+    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    กลับหน้าหลัก
+  </a>
+  <div class="title-header fi1">
+    <div class="title-zh">財神爺</div>
+    <div class="title-th">เทพเจ้าไฉ่ซิงเอี้ย</div>
+    <div class="title-role">เทพแห่งโชคลาภ การเงิน และความรุ่งเรือง</div>
+    <div class="title-line"></div>
+  </div>
+
+  <div class="deity-single fi2">
+    <div class="deity-item">
+      <div class="deity-circle-wrap">
+        <div class="deity-glow"></div>
+        <div class="deity-ring-outer"></div>
+        <div class="deity-ring-inner"></div>
+        <div class="deity-circle">
+          <img src="images/caishen.png" alt="เทพเจ้าไฉ่ซิงเอี้ย">
+          <!-- หมายเหตุ: รูปองค์เทพ ใส่ไฟล์ชื่อ caishen.png ในโฟลเดอร์ images/ -->
+        </div>
+      </div>
+      <div class="deity-name-th">เทพเจ้าไฉ่ซิงเอี้ย</div>
+      <div class="deity-name-zh">財神爺</div>
+    </div>
+  </div>
+
+  <div class="divider fi2"><span>❖</span></div>
+
+  <div class="audio-section fi3">
+    <div class="audio-label">ฟังประวัติองค์เทพ</div>
+    <div class="audio-controls">
+      <div class="play-btn" onclick="toggleAudio()">
+        <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <div class="audio-info">
+        <div class="audio-title">ประวัติเทพเจ้าไฉ่ซิงเอี้ย</div>
+        <div class="audio-time" id="audioTime">0:00 / –:––</div>
+      </div>
+    </div>
+    <div class="progress-bar" onclick="seekAudio(event)">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <audio id="audioPlayer" src="audio/caishen.mp3"></audio>
+    <!-- หมายเหตุ: ไฟล์เสียง ใส่ไฟล์ชื่อ caishen.mp3 ในโฟลเดอร์ audio/ -->
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-btn active" id="nav-history" onclick="showSection('history')">
+      <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 1 0 0 18A9 9 0 0 0 13 3zm-1 5h2v5.4l3.8 2.2-1 1.7L11 14.8V8z"/></svg>
+      <span>ประวัติ</span>
+    </button>
+    <button class="nav-btn" id="nav-bless" onclick="showSection('bless')">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+      <span>ขอพร</span>
+    </button>
+    <button class="nav-btn" id="nav-ritual" onclick="showSection('ritual')">
+      <svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+      <span>การไหว้</span>
+    </button>
+  </div>
+
+  <div class="page-section active" id="section-history">
+    <div class="section fi3">
+      <h2>ที่มาและลักษณะ</h2>
+      <p>ไฉ่ซิงเอี้ย คือเทพเจ้าแห่งโชคลาภ การเงิน และความมั่งคั่งที่ชาวจีนให้ความเคารพบูชากันอย่างแพร่หลาย โดยเฉพาะในช่วงตรุษจีนซึ่งถือเป็นฤกษ์ดีในการต้อนรับโชคลาภเข้าสู่บ้าน.</p><br>
+      <p>ในคติที่แพร่หลาย ท่านมักเชื่อมโยงกับ <span class="hl">จ้าวกงหมิง</span> และมักปรากฏในรูปขุนนางผู้สูงศักดิ์ ถือคฑา ยู่อี่ ถุงเงิน หรือตำลึงทอง.</p>
+    </div>
+    <div class="section fi4">
+      <h2>ความสำคัญ</h2>
+      <p>ผู้ศรัทธานิยมสักการะไฉ่ซิงเอี้ยเพื่อขอ <span class="hl">ความมั่งคั่ง ความสำเร็จทางธุรกิจ และโอกาสทางการเงิน</span> โดยเฉพาะผู้ประกอบการและพ่อค้า.</p><br>
+      <p>การไหว้รับไฉ่ซิงเอี้ยในช่วงปีใหม่จีนเป็นธรรมเนียมสำคัญที่สะท้อนความหวังให้ทั้งปีเต็มไปด้วยโชคลาภและการค้าขายที่ราบรื่น.</p>
+    </div>
+    <div class="section fi4">
+      <h2>ช่วงนิยมบูชา</h2>
+      <p>นิยมบูชาอย่างมากในช่วง <span class="hl">คืนวันส่งท้ายปีเก่าจีนต่อเนื่องสู่วันขึ้นปีใหม่จีน</span> รวมถึงวันพระจีนหรือวันเปิดกิจการใหม่.</p>
+    </div>
+  </div>
+
+  <div class="page-section" id="section-bless">
+    <div class="section fi3">
+      <h2>ขอพรได้เรื่องอะไรบ้าง</h2>
+      <div class="bless-grid">
+        <div class="bless-item"><span class="bless-icon">💰</span><span class="bless-text">โชคลาภและทรัพย์สิน</span></div>
+        <div class="bless-item"><span class="bless-icon">📈</span><span class="bless-text">การค้าขายรุ่งเรือง</span></div>
+        <div class="bless-item"><span class="bless-icon">🧧</span><span class="bless-text">รับโอกาสทางการเงิน</span></div>
+        <div class="bless-item"><span class="bless-icon">🏪</span><span class="bless-text">กิจการมั่นคง</span></div>
+      </div>
+    </div>
+    <div class="section fi4">
+      <h2>วันมงคลในการขอพร</h2>
+      <div class="date-stack">
+        <div class="date-badge">คืนวันส่งท้ายปีเก่าจีน</div>
+        <div class="date-badge">วันตรุษจีน</div>
+        <div class="date-badge">วันเปิดกิจการหรือวันมงคลส่วนตัว</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-section" id="section-ritual">
+    <div class="section fi3">
+      <h2>ขั้นตอนการไหว้</h2>
+      <ol class="ritual-list">
+        <li><div class="step-num">1</div><div>จัดโต๊ะบูชาให้สะอาดเรียบร้อย</div></li>
+        <li><div class="step-num">2</div><div>จุดธูป 5 ดอก เพื่อเชิญรับพรแห่งโชคลาภ</div></li>
+        <li><div class="step-num">3</div><div>กล่าวชื่อ–นามสกุล และตั้งจิตขอพรเรื่องการเงินหรือกิจการ</div></li>
+        <li><div class="step-num">4</div><div>อธิษฐานให้การค้าขายราบรื่น มีผู้เกื้อหนุน และใช้ทรัพย์อย่างถูกต้อง</div></li>
+        <li><div class="step-num">5</div><div>ปักธูป กราบ 3 ครั้ง</div></li>
+        <li><div class="step-num">6</div><div>เผากระดาษเงินกระดาษทองหรือรับซองมงคลตามธรรมเนียม</div></li>
+      </ol>
+    </div>
+    <div class="section fi4">
+      <h2>ของไหว้ที่นิยม</h2>
+      <div class="chips">
+        <span class="chip">ธูป 5 ดอก</span><span class="chip">ผลไม้ 5 อย่าง</span><span class="chip">น้ำชา</span><span class="chip">ขนมเปี๊ยะ</span><span class="chip">เหรียญหรือตำลึงทอง</span><span class="chip">กระดาษเงินทอง</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const pc=document.getElementById('particles');
+for(let i=0;i<14;i++){const p=document.createElement('div');p.className='p';p.style.setProperty('--x',Math.random()*100+'%');p.style.setProperty('--dur',(4+Math.random()*5)+'s');p.style.setProperty('--delay',(Math.random()*6)+'s');pc.appendChild(p);}
+function showSection(name){document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('section-'+name).classList.add('active');document.getElementById('nav-'+name).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+let playing=false;
+const audio=document.getElementById('audioPlayer'),playIcon=document.getElementById('playIcon'),progressFill=document.getElementById('progressFill'),audioTime=document.getElementById('audioTime');
+function toggleAudio(){if(playing){audio.pause();playIcon.innerHTML='<path d="M8 5v14l11-7z"/>';}else{audio.play().catch(()=>{});playIcon.innerHTML='<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';}playing=!playing;}
+audio.addEventListener('timeupdate',()=>{if(!audio.duration)return;progressFill.style.width=(audio.currentTime/audio.duration*100)+'%';const fmt=t=>`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;audioTime.textContent=`${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;});
+audio.addEventListener('ended',()=>{playing=false;playIcon.innerHTML='<path d="M8 5v14l11-7z"/>';progressFill.style.width='0%';});
+function seekAudio(e){if(!audio.duration)return;audio.currentTime=(e.offsetX/e.currentTarget.offsetWidth)*audio.duration;}
+</script>
+
+</body>
+</html>

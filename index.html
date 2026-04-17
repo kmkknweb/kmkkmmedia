@@ -420,9 +420,11 @@ function enterShrine() {
     setTimeout(() => {
       intro.style.display = 'none';
       introSound.pause();
+      if (!document.hidden) {
       bgSound.volume = 0.23;
       bgSound.play().catch(() => {});
       setTimeout(async () => { await autoPlayVoice(); }, 200);
+      }
     }, 800);
   }, 14000);
 }

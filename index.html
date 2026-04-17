@@ -110,15 +110,16 @@ body::before{
 .hero-image-wrap {
   position: relative; /* เพื่อให้สามารถเพิ่ม glow ได้ */
   display: inline-block; /* หรือ block ขึ้นอยู่กับโครงสร้างที่คุณใช้ */
+  background: transparent;
 }
 
 .hero-image-wrap img {
   display: block;
-  width: 100%;
+  width: 80%;
   height: auto;
   border-radius: 16px; /* เพิ่มมุมโค้งให้กับภาพ */
   object-fit: contain; /* ให้ภาพไม่ถูกยืดหรือครอบเกิน */
-  
+  background: transparent; /*
   /* เพิ่ม glow รอบๆ ภาพ */
   box-shadow: 0 0 15px 5px rgba(200, 144, 26, 0.8); /* glow สีทองอ่อน */
 }

@@ -420,7 +420,7 @@ function enterShrine() {
     setTimeout(() => {
       intro.style.display = 'none';
       introSound.pause();
-      bgSound.volume = 0.18;
+      bgSound.volume = 0.23;
       bgSound.play().catch(() => {});
       setTimeout(async () => { await autoPlayVoice(); }, 200);
     }, 800);
@@ -462,6 +462,8 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     bgSound.pause();
     if (activeVoice) { activeVoice.pause(); }
+    const introSound = document.getElementById('introSound');
+    if (introSound) introSound.pause();
   }
 });
 

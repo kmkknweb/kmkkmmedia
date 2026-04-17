@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ศาลเจ้าปึงเถ่ากงม่าขอนแก่น</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@300;400;600;700&family=Noto+Sans+Thai:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#C8901A;
+  --gold-light:#E8B84B;
+  --gold-dim:#7a5510;
+  --ink:#3a210d;
+  --ink-mid:#1b0c02;
+  --ink-light:#251003;
+  --brown-deep:#4a2400;
+  --cream:#F5E6C8;
+  --cream-dim:#E9D7B1;
+  --white:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);
+  font-family:"Noto Sans Thai",sans-serif;
+  color:var(--cream);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 120% 50% at 50% 0%, #a85b1320 0%, transparent 60%),
+    radial-gradient(ellipse 90% 40% at 50% 100%, #5c2e0015 0%, transparent 60%);
+  pointer-events:none;
+}
+.page{position:relative;z-index:1;padding-bottom:80px}
+.header{
+  position:relative;padding:42px 20px 22px;text-align:center;
+}
+.logo-wrap{position:relative;width:100px;height:100px;margin:0 auto 18px}
+.logo-ring{position:absolute;inset:-6px;border-radius:50%;border:1px solid #C8901A50;animation:spin-slow 25s linear infinite}
+.logo-ring::before{content:"";position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.logo-glow{position:absolute;inset:-14px;border-radius:50%;background:radial-gradient(circle,#C8901A1A,transparent 70%);animation:breathe 3s ease-in-out infinite}
+.logo-img{width:100%;height:100%;border-radius:50%;border:2px solid var(--gold-dim);object-fit:cover;background:white;position:relative;z-index:1}
+.shrine-name{font-family:"Noto Serif Thai",serif;font-size:23px;font-weight:700;color:var(--gold-light);text-shadow:0 0 24px #C8901A50;line-height:1.5}
+.assoc-name{font-size:12px;color:var(--white);opacity:.9;margin-top:6px;letter-spacing:.3px}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:linear-gradient(to right, transparent, var(--gold-dim))}
+.divider::after{background:linear-gradient(to left, transparent, var(--gold-dim))}
+.divider span{color:var(--gold);font-size:12px;flex-shrink:0}
+.layout{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+  padding:0 14px;
+}
+.selector-panel,.detail-panel,.music-panel{
+  background:rgba(27,12,2,.94);
+  border:1px solid #C8901A55;
+  border-radius:18px;
+  box-shadow:0 10px 28px rgba(0,0,0,.24);
+  backdrop-filter:blur(7px);
+}
+.music-panel{padding:14px;position:sticky;top:10px;z-index:20}
+.music-top{display:flex;align-items:center;gap:12px}
+.music-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 30%, #5a2600, #1a0a01 70%);border:1.5px solid var(--gold);color:#fff;font-size:22px;flex-shrink:0;box-shadow:0 0 0 4px rgba(200,144,26,.10)}
+.music-title{color:#fff;font-weight:700;font-size:15px;line-height:1.4}
+.music-sub{color:#fff;opacity:.82;font-size:12px;margin-top:2px;line-height:1.5}
+.music-actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.music-btn{flex:1 1 220px;border:none;cursor:pointer;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s ease,opacity .2s ease;min-width:0}
+.music-btn:active{transform:scale(.98)}
+.music-btn.primary{background:linear-gradient(135deg,#E8B84B,#C8901A);color:#1c0e00}
+.music-btn.secondary{background:#2a1204;color:#fff;border:1px solid #C8901A60}
+.music-status{margin-top:10px;font-size:12px;color:#fff;opacity:.92;background:rgba(255,255,255,.04);border:1px solid rgba(200,144,26,.22);border-radius:12px;padding:9px 12px}
+.pulse-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ffcc66;margin-right:6px;box-shadow:0 0 10px rgba(255,204,102,.8);animation:pulse 1.4s infinite;vertical-align:middle}
+.selector-panel{padding:14px}
+.selector-head{font-size:12px;color:var(--white);opacity:.9;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.selector-scroll{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  width:100%;
+}
+.deity-chip{
+  min-width:0;
+  width:100%;
+  border-radius:16px;
+  border:1px solid #C8901A50;
+  background:var(--ink-mid);
+  padding:12px;
+  color:inherit;
+  text-decoration:none;
+  cursor:pointer;
+  transition:transform .2s ease,border-color .2s ease, background .2s ease;
+}
+.deity-chip.active{border-color:var(--gold);background:#2a1204;box-shadow:0 0 0 1px rgba(232,184,75,.2)}
+.deity-chip:active{transform:scale(.98)}
+.deity-chip-top{display:flex;align-items:center;gap:10px}
+.deity-chip-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;background:#3d1000;border:1.5px solid var(--gold-dim);flex-shrink:0}
+.deity-chip-name{font-family:"Noto Serif Thai",serif;font-size:15px;font-weight:700;color:#fff;line-height:1.4}
+.deity-chip-role{font-size:11px;color:#fff;opacity:.82;line-height:1.4;margin-top:8px;min-height:30px}
+.detail-panel{padding:16px}
+.detail-top{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
+.hero-card{background:var(--ink-mid);border:1px solid #C8901A50;border-radius:18px;padding:14px}
+.hero-zh{font-size:12px;letter-spacing:3px;color:var(--cream-dim);margin-bottom:6px}
+.hero-title{font-family:"Noto Serif Thai",serif;font-size:24px;font-weight:700;color:var(--gold-light);line-height:1.45}
+.hero-role{font-size:14px;color:#fff;opacity:.92;margin-top:6px;line-height:1.5}
+
+.hero-image-wrap {
+  position: relative;
+  display: inline-block;
+  background: transparent;
+  border: none;
+  overflow: visible;
+}
+
+.hero-image-wrap img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  object-fit: contain;
+  background: transparent;
+  filter: drop-shadow(0 0 20px rgba(200, 144, 26, 0.8))
+          drop-shadow(0 0 40px rgba(200, 144, 26, 0.6))
+          drop-shadow(0 0 80px rgba(200, 144, 26, 0.4));
+}
+
+
+
+  
+/*.hero-image-wrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid #C8901A45;background:#2b1404;aspect-ratio:16/10;max-height:260px}
+.hero-image-wrap img{width:100%;height:100%;object-fit:contain}*/
+
+
+
+
+  
+.hero-image-note{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(27,12,2,.76);border:1px solid rgba(200,144,26,.35);border-radius:12px;padding:8px 10px;font-size:11px;color:#fff;line-height:1.5}
+.voice-panel{margin-top:14px;background:var(--ink-mid);border:1px solid #C8901A50;border-radius:16px;padding:14px}
+.voice-title{font-size:13px;color:#fff;font-weight:700}
+.voice-sub{font-size:12px;color:#fff;opacity:.82;margin-top:4px;line-height:1.5}
+.voice-actions{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.voice-btn{border:none;cursor:pointer;border-radius:12px;padding:11px 14px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s ease}
+.voice-btn:active{transform:scale(.98)}
+.voice-btn.play{background:linear-gradient(135deg,#fff,#f0d8a0);color:#2a1404}
+.voice-btn.stop{background:#2a1204;color:#fff;border:1px solid #C8901A60}
+.voice-note{margin-top:10px;font-size:11px;color:#fff;opacity:.72;line-height:1.6}
+.content-stack{margin-top:16px;display:grid;gap:14px}
+.detail-body{animation:fadePanel .2s ease}
+.page-section{display:none}
+.page-section.active{display:block}
+.section{margin:0;background:var(--ink-mid);border:1px solid #C8901A45;border-radius:14px;padding:16px}
+.section h2{font-family:"Noto Serif Thai",serif;font-size:15px;font-weight:700;color:var(--gold-light);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section h2::before{content:"";width:3px;height:15px;background:var(--gold);border-radius:2px;flex-shrink:0}
+.section p{font-size:13px;line-height:1.9;color:#fff;opacity:.94}
+.hl{color:var(--gold-light);font-weight:700}
+.bless-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.bless-item{background:#3d150050;border:1px solid #7a551040;border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px}
+.bless-icon{font-size:18px;flex-shrink:0}
+.bless-text{font-size:12px;color:#fff;line-height:1.4}
+.ritual-list{list-style:none}
+.ritual-list li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #5a3a0030;font-size:13px;line-height:1.7;color:#fff;opacity:.94}
+.ritual-list li:last-child{border-bottom:none}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--brown-deep);border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold);flex-shrink:0;margin-top:1px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{background:#3d150050;border:1px solid #7a551040;border-radius:16px;padding:4px 11px;font-size:12px;color:#fff}
+.date-badge{display:inline-flex;align-items:center;gap:6px;background:var(--brown-deep);border:1px solid var(--gold);border-radius:20px;padding:5px 13px;font-size:12px;color:#fff;margin-top:8px}
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+.p{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--gold);opacity:0;animation:float-up var(--dur) ease-in infinite var(--delay);left:var(--x);bottom:0}
+.footer{padding:22px 20px;text-align:center;opacity:.75}
+.footer p{font-size:11px;color:#fff;line-height:1.8}
+.hidden-audio{display:none}
+@media (min-width: 980px) {
+  .layout{grid-template-columns:320px 1fr;align-items:start}
+  .left-col{position:sticky;top:10px;display:grid;gap:14px}
+  .selector-scroll{display:grid;grid-template-columns:1fr;overflow:visible}
+  .deity-chip{min-width:0}
+  .detail-top{grid-template-columns:320px 1fr}
+}
+@keyframes breathe{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes float-up{0%{opacity:0;transform:translateY(0)}20%{opacity:.5}100%{opacity:0;transform:translateY(-100px)}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.35);opacity:1}}
+
+#splash{position:fixed;inset:0;z-index:9999;background:#1a0900;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;overflow:hidden;}
+#splash canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+.spl-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,#5a1e0038,transparent 70%);pointer-events:none;}
+.spl-logo-wrap{position:relative;width:160px;height:160px;margin-bottom:18px;}
+.spl-glow1{position:absolute;inset:-22px;border-radius:50%;background:radial-gradient(circle,#C8901A28,transparent 65%);animation:breathe 2.5s ease-in-out infinite;}
+.spl-glow2{position:absolute;inset:-10px;border-radius:50%;background:radial-gradient(circle,#C8901A42,transparent 60%);animation:breathe 2.5s ease-in-out infinite 0.7s;}
+.spl-logo{width:160px;height:160px;border-radius:50%;object-fit:cover;object-position:center;background:#1a0900;position:relative;z-index:1;filter:drop-shadow(0 0 24px #C8901A95);}
+.spl-title{font-family:"Noto Serif Thai",serif;font-size:22px;font-weight:700;color:#E8B84B;text-shadow:0 0 28px #C8901A80;text-align:center;line-height:1.6;position:relative;z-index:2;margin-bottom:6px;}
+.spl-sub{font-size:11px;color:#C9A96E;letter-spacing:1px;position:relative;z-index:2;margin-bottom:0;}
+.spl-divider{display:flex;align-items:center;gap:10px;width:72%;max-width:240px;margin:18px 0;position:relative;z-index:2;}
+.spl-divider::before,.spl-divider::after{content:"";flex:1;height:1px;}
+.spl-divider::before{background:linear-gradient(to right,transparent,#C8901A60);}
+.spl-divider::after{background:linear-gradient(to left,transparent,#C8901A60);}
+.spl-divider span{color:#C8901A;font-size:13px;}
+.spl-btn{position:relative;z-index:2;background:transparent;color:#E8B84B;border:1.5px solid #C8901A;border-radius:50px;padding:13px 42px;font-family:"Noto Serif Thai",serif;font-size:16px;font-weight:700;letter-spacing:1px;cursor:pointer;box-shadow:0 0 20px #C8901A40,inset 0 0 16px #C8901A10;transition:all 0.2s;white-space:nowrap;}
+.spl-btn:active{transform:scale(0.96);}
+
+/* intro overlay */
+#introOverlay{position:fixed;inset:0;z-index:10000;background:#1a0900;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;overflow:hidden;}
+#introOverlay canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+.intro-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,#5a1e0038,transparent 70%);pointer-events:none;}
+.intro-logo-wrap{position:relative;width:100px;height:100px;margin-bottom:24px;}
+.intro-glow{position:absolute;inset:-18px;border-radius:50%;background:radial-gradient(circle,#C8901A28,transparent 65%);animation:breathe 2.5s ease-in-out infinite;}
+.intro-logo{width:100px;height:100px;border-radius:50%;object-fit:cover;position:relative;z-index:1;filter:drop-shadow(0 0 18px #C8901A90);}
+.intro-lines{display:flex;flex-direction:column;align-items:center;gap:14px;position:relative;z-index:2;}
+.intro-line{font-family:"Noto Serif Thai",serif;text-align:center;opacity:0;transform:translateY(10px);transition:opacity 0.8s ease,transform 0.8s ease;}
+.intro-line.show{opacity:1;transform:translateY(0);}
+.intro-line.big{font-size:20px;font-weight:700;color:#E8B84B;text-shadow:0 0 24px #C8901A80;}
+.intro-line.med{font-size:14px;color:#fff;line-height:1.7;}
+.intro-line.med.show{opacity:0.88;}
+.intro-line.small{font-size:12px;color:#C9A96E;letter-spacing:1px;}
+.intro-progress{margin-top:28px;width:180px;height:2px;background:rgba(200,144,26,0.2);border-radius:2px;position:relative;z-index:2;overflow:hidden;}
+.intro-progress-bar{height:100%;width:0%;background:linear-gradient(to right,#C8901A,#E8B84B);border-radius:2px;transition:width 0.2s linear;}
+
+/* ปุ่มลำโพงมุมขวาบน */
+#musicToggleBtn{position:fixed;top:12px;right:12px;z-index:1000;width:38px;height:38px;border-radius:50%;background:rgba(27,10,0,0.82);border:1.5px solid #C8901A80;color:#E8B84B;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 8px #C8901A40;transition:all 0.2s;}
+
+/* ปุ่มหยุดบรรยายบนรูป */
+#voiceStopBtn{position:absolute;bottom:10px;right:10px;z-index:10;width:40px;height:40px;border-radius:50%;background:rgba(27,10,0,0.85);border:1.5px solid #C8901A;color:#E8B84B;font-size:16px;display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 10px #C8901A50;transition:transform 0.15s;}
+#voiceStopBtn.visible{display:flex;}
+#voiceStopBtn:active{transform:scale(0.92);}
+
+/* hero image fit-content */
+/*.hero-image-wrap{position:relative;width:fit-content;max-width:100%;margin:0 auto;border-radius:16px;overflow:hidden;}*/
+/*.hero-image-wrap img{display:block;max-width:100%;max-height:320px;height:auto;border-radius:16px;box-shadow:0 0 32px 10px rgba(200,144,26,0.32),0 0 70px 24px rgba(139,69,0,0.20);}*/
+
+/* fade transition */
+.hero-image-wrap img,.hero-title,.hero-role,.hero-zh{transition:opacity 0.3s ease;}
+.fading{opacity:0!important;}
+
+/* footer */
+.footer{padding:16px 20px;text-align:center;border-top:1px solid #5a2d0030;margin-top:8px;}
+.footer-logo{width:36px;height:36px;border-radius:50%;object-fit:cover;opacity:0.7;margin-bottom:6px;}
+.footer p{font-size:10px;color:#C9A96E;opacity:0.6;line-height:1.7;}
+
+</style>
+</head>
+<body>
+<!-- SPLASH -->
+<div id="splash">
+  <canvas id="splashCanvas"></canvas>
+  <div class="spl-bg"></div>
+  <div class="spl-logo-wrap">
+    <div class="spl-glow1"></div>
+    <div class="spl-glow2"></div>
+    <img class="spl-logo" src="logo_hiso.png" alt="โลโก้ศาลเจ้า">
+  </div>
+  <div class="spl-title">ศาลเจ้าปึงเถ่ากงม่า<br>ขอนแก่น</div>
+  <div class="spl-sub">สมาคมปึงเถ่ากงม่าขอนแก่น</div>
+  <div class="spl-divider"><span>❖</span></div>
+  <button class="spl-btn" onclick="enterShrine()">เข้าชมศาลเจ้า</button>
+</div>
+
+<!-- INTRO OVERLAY -->
+<div id="introOverlay">
+  <canvas id="introCanvas"></canvas>
+  <div class="intro-bg"></div>
+  <div class="intro-logo-wrap">
+    <div class="intro-glow"></div>
+    <img class="intro-logo" src="logo_hiso.png" alt="โลโก้ศาลเจ้า">
+  </div>
+  <div class="intro-lines">
+    <div class="intro-line big" id="iLine1">ยินดีต้อนรับสู่ศาลเจ้าปึงเถ่ากงม่าขอนแก่น</div>
+    <div class="intro-line med" id="iLine2">สถานที่ศักดิ์สิทธิ์ที่ชาวจีนโพ้นทะเลสร้างด้วยศรัทธา</div>
+    <div class="intro-line med" id="iLine3">ขอให้ทุกท่านได้รับพรจากองค์เทพเจ้าทุกพระองค์</div>
+    <div class="intro-line small" id="iLine4">กำลังเตรียมข้อมูล...</div>
+  </div>
+  <div class="intro-progress"><div class="intro-progress-bar" id="introBar"></div></div>
+  <audio id="introSound" preload="auto">
+    <source src="audio/intro.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
+<button id="musicToggleBtn" title="ปิด/เปิดเพลง" onclick="toggleMusic()">🔊</button>
+<div class="particles" id="particles"></div>
+<div class="page">
+  <div class="header">
+    <div class="logo-wrap">
+      <div class="logo-glow"></div>
+      <div class="logo-ring"></div>
+      <!-- หมายเหตุ: ใส่ไฟล์โลโก้ชื่อ LoGoGolden.png ไว้ที่โฟลเดอร์เดียวกับไฟล์นี้ -->
+      <img class="logo-img" src="LoGoGolden.png" alt="โลโก้ศาลเจ้า">
+    </div>
+    <div class="shrine-name">ศาลเจ้าปึงเถ่ากงม่าขอนแก่น</div>
+    <div class="assoc-name">สมาคมปึงเถ่ากงม่าขอนแก่น</div>
+    <div class="divider"><span>❖ องค์เทพเจ้าในศาลเจ้า ❖</span></div>
+  </div>
+
+  <div class="layout">
+    <div class="left-col">
+      <div class="music-panel" style="display:none">
+        <div class="music-top">
+          <div class="music-icon" id="musicVisual">♪</div>
+          <div>
+            <div class="music-title">กดเพื่อฟังเพลงบรรยากาศของศาลเจ้า</div>
+            <div class="music-sub">ใส่ไฟล์เพลงพื้นหลังเพียงไฟล์เดียวทั้งหน้าเว็บ ไม่ต้องเปิดใหม่ทุกองค์</div>
+          </div>
+        </div>
+        <div class="music-actions">
+          <button id="playMusicBtn" class="music-btn primary" type="button">▶ เปิดเพลง</button>
+          <button id="stopMusicBtn" class="music-btn secondary" type="button">❚❚ ปิดเพลง</button>
+        </div>
+        <div class="music-status" id="musicStatus">สถานะ: <strong>ยังไม่ได้เปิดเพลง</strong></div>
+        <!-- หมายเหตุ: วางไฟล์เพลงพื้นหลังไว้ที่ audio/bg.mp3 -->
+        <audio id="bgSound" loop preload="auto">
+          <source src="audio/bg.mp3" type="audio/mpeg">
+        </audio>
+      </div>
+
+      <div class="selector-panel">
+        <div class="selector-head">เลือกองค์เทพที่ต้องการรับชม</div>
+        <div class="selector-scroll" id="selectorScroll"></div>
+      </div>
+    </div>
+
+    <div class="detail-panel">
+      <div class="detail-top">
+        <div class="hero-image-wrap">
+          <img id="heroImage" src="images/tiangong.png" alt="ภาพองค์เทพ">
+          <button id="voiceStopBtn" onclick="stopVoice()" title="หยุดคำบรรยาย">⏹</button>
+        </div>
+
+        <div>
+          <div class="hero-card">
+            <div class="hero-zh" id="heroZh">天公</div>
+            <div class="hero-title" id="heroTitle">เทพฟ้าดิน</div>
+            <div class="hero-role" id="heroRole">เทพสูงสุดแห่งสวรรค์และจักรวาล</div>
+          </div>
+
+          <div style="display:none">
+          </div>
+        </div>
+      </div>
+
+      <div class="content-stack">
+        <div id="detailContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <img class="footer-logo" src="logo_hiso.png" alt="โลโก้">
+    <p>© สงวนสิทธิ์โดยสมาคมปึงเถ่ากงม่าขอนแก่น</p>
+  </div>
+</div>
+
+<div class="hidden-audio" id="voiceAudioHolder"></div>
+
+<script>
+const deityData = {"tiangong": {"title": "เทพฟ้าดิน", "role": "เทพสูงสุดแห่งฟ้า ผู้ประทานความร่มเย็นและสมดุล", "zh": "天公 · 玉皇上帝", "icon": "☀️", "image": "images/tiangong.png", "voice": "audio/tiangong.mp3", "history": "\n<div class=\"section fi3\">\n<h2>ที่มาและความหมาย</h2>\n<p>เทพฟ้าดิน หรือ <span class=\"hl\">“ฮุกเทียงแช่ / เทียนกง”</span> เป็นเทพเจ้าสูงสุดแห่งท้องฟ้าในความเชื่อจีน และมักเชื่อมโยงกับ <span class=\"hl\">เง็กเซียนฮ่องเต้</span> ผู้ปกครองสวรรค์และดูแลระเบียบของจักรวาล.</p><br/>\n<p>ในคติพื้นบ้านจีนและสายเต๋า ท่านเป็นเสมือนประธานแห่งสวรรค์ ผู้รับรู้ความดี–ความชั่วของมนุษย์ และประทานความคุ้มครองแก่ผู้ประพฤติดี.</p>\n</div>\n<div class=\"section fi4\">\n<h2>ความสำคัญในความเชื่อจีน</h2>\n<p>ชาวจีนจำนวนมากให้ความเคารพเทพฟ้าดินในฐานะ <span class=\"hl\">ผู้คุ้มครองความสงบของบ้านเมือง</span> ผู้ควบคุมดวงชะตา ความสมดุล และระเบียบแห่งฟ้าดิน.</p><br/>\n<p>ในศาลเจ้าจีนทั่วไป มักมีจุดบูชาเทพฟ้าดินอยู่ด้านหน้า หรือเป็นจุดแรกที่ผู้ศรัทธากราบไหว้ก่อนเข้าสักการะองค์เทพอื่น.</p>\n</div>\n<div class=\"section fi4\">\n<h2>วันสำคัญ</h2>\n<p>วันสำคัญของการบูชาเทพฟ้าดินนิยมตรงกับ <span class=\"hl\">วันขึ้น 9 ค่ำ เดือน 1 ตามปฏิทินจีน</span> ซึ่งถือเป็นวันเทวสมภพของทีกงและเป็นวันที่ผู้ศรัทธานิยมตั้งโต๊ะไหว้อย่างยิ่งใหญ่.</p>\n</div>\n", "bless": "\n<div class=\"section fi3\">\n<h2>ขอพรได้เรื่องอะไรบ้าง</h2>\n<div class=\"bless-grid\">\n<div class=\"bless-item\"><span class=\"bless-icon\">☁️</span><span class=\"bless-text\">ความร่มเย็นของครอบครัว</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">⚖️</span><span class=\"bless-text\">สมดุลและความสงบ</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🙏</span><span class=\"bless-text\">สิริมงคลในชีวิต</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🌤️</span><span class=\"bless-text\">คุ้มครองให้ผ่านอุปสรรค</span></div>\n</div>\n</div>\n<div class=\"section fi4\">\n<h2>วันมงคลในการขอพร</h2>\n<div class=\"date-stack\">\n<div class=\"date-badge\">วันขึ้น 9 ค่ำ เดือน 1</div>\n<div class=\"date-badge\">วันขึ้น 1 ค่ำ ทุกเดือน</div>\n<div class=\"date-badge\">วันขึ้น 15 ค่ำ ทุกเดือน</div>\n</div>\n</div>\n", "ritual": "\n<div class=\"section fi3\">\n<h2>ขั้นตอนการไหว้</h2>\n<ol class=\"ritual-list\">\n<li><div class=\"step-num\">1</div><div>ล้างมือให้สะอาดและตั้งจิตให้สงบ</div></li>\n<li><div class=\"step-num\">2</div><div>จุดธูป 9 ดอก หันหน้าไปทางฟ้าหรือโต๊ะบูชา</div></li>\n<li><div class=\"step-num\">3</div><div>กล่าวชื่อ–นามสกุล และที่อยู่ของตน</div></li>\n<li><div class=\"step-num\">4</div><div>อธิษฐานขอความร่มเย็น ความคุ้มครอง และปัญญาในการดำเนินชีวิต</div></li>\n<li><div class=\"step-num\">5</div><div>ปักธูปและกราบด้วยความเคารพ</div></li>\n<li><div class=\"step-num\">6</div><div>เผากระดาษเงินกระดาษทองตามธรรมเนียม</div></li>\n</ol>\n</div>\n<div class=\"section fi4\">\n<h2>ของไหว้ที่นิยม</h2>\n<div class=\"chips\">\n<span class=\"chip\">ธูป 9 ดอก</span><span class=\"chip\">น้ำชา</span><span class=\"chip\">ผลไม้ 5 อย่าง</span><span class=\"chip\">ขนมไหว้ 5 อย่าง</span><span class=\"chip\">กระดาษเงินทอง</span><span class=\"chip\">ดอกไม้</span>\n</div>\n</div>\n"}, "pungtaogong": {"title": "ปึงเถ่ากง – ปึงเถ่าม่า", "role": "ผู้ปกป้องชุมชนและลูกหลาน", "zh": "本頭公 · 本頭媽", "icon": "🙏", "image": "images/pungtaogong.png", "voice": "audio/pungtaogong.mp3", "history": "\n<div class=\"section fi3\">\n<h2>ที่มาและความหมาย</h2>\n<p>องค์ปึงเถ่ากงม่า เป็นเทพเจ้าที่ชาวจีนโพ้นทะเลให้ความเคารพบูชามาอย่างยาวนาน โดยเฉพาะในชุมชนจีนที่อพยพมาตั้งถิ่นฐานในประเทศไทย</p><br/>\n<p><span class=\"hl\">\"ปึงเถ่ากง\"</span> หมายถึง ผู้ใหญ่ ผู้อาวุโส หรือผู้นำแห่งชุมชนในอดีต ผู้มีความเมตตาและดูแลความสงบสุขของผู้คน</p><br/>\n<p><span class=\"hl\">\"ปึงเถ่าม่า\"</span> หมายถึง คู่ชีวิตหรือมารดา ผู้ดูแลครอบครัวและส่งเสริมคุณธรรมในบ้านเรือน</p>\n</div>\n<div class=\"section fi4\">\n<h2>ตำนานและความเชื่อ</h2>\n<p>ตำนานพื้นถิ่นหลายแห่งเล่าว่า ปึงเถ่ากงม่า คือผู้ก่อตั้งหรือผู้ดูแลกลุ่มชาวจีนรุ่นแรกที่เดินทางข้ามน้ำข้ามทะเลมาตั้งถิ่นฐานในต่างแดน ท่านจึงเป็นสัญลักษณ์ของ <span class=\"hl\">\"ผู้ปกป้องชุมชน\"</span> ทั้งทางกายภาพและจิตวิญญาณ</p>\n</div>\n<div class=\"section fi4\">\n<h2>ศาลเจ้าที่ขอนแก่น</h2>\n<p>ก่อสร้างครั้งแรกเมื่อปี <span class=\"hl\">พ.ศ. 2504</span> ต่อมาสร้างอาคารหลังใหม่แล้วเสร็จเมื่อวันที่ 24 มีนาคม <span class=\"hl\">พ.ศ. 2539</span> ใช้งบประมาณกว่า 12 ล้านบาท</p>\n<div class=\"date-badge\">❖ ก่อตั้ง พ.ศ. 2504</div>\n</div>\n", "bless": "\n<div class=\"section fi3\">\n<h2>ขอพรได้เรื่องอะไรบ้าง</h2>\n<div class=\"bless-grid\">\n<div class=\"bless-item\"><span class=\"bless-icon\">🏠</span><span class=\"bless-text\">ครอบครัวร่มเย็น</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🛡️</span><span class=\"bless-text\">ปลอดภัยจากภัยพิบัติ</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">✨</span><span class=\"bless-text\">สิริมงคลในชีวิต</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🤝</span><span class=\"bless-text\">ความสามัคคีในชุมชน</span></div>\n</div>\n</div>\n<div class=\"section fi4\">\n<h2>วันมงคลในการขอพร</h2>\n<div style=\"display:flex;flex-direction:column;gap:8px;margin-top:4px\">\n<div class=\"date-badge\">วันขึ้น 1 ค่ำ ทุกเดือน</div>\n<div class=\"date-badge\">วันขึ้น 15 ค่ำ ทุกเดือน</div>\n<div class=\"date-badge\">วันที่ 1 เดือน 10 ตามปฏิทินจีน</div>\n</div>\n</div>\n", "ritual": "\n<div class=\"section fi3\">\n<h2>ขั้นตอนการไหว้</h2>\n<ol class=\"ritual-list\">\n<li><div class=\"step-num\">1</div><div>ล้างมือให้สะอาด แต่งกายสุภาพเรียบร้อย</div></li>\n<li><div class=\"step-num\">2</div><div>จุดธูป 3 หรือ 9 ดอก ถือไว้ระดับหน้าผาก</div></li>\n<li><div class=\"step-num\">3</div><div>กล่าวชื่อ นามสกุล และที่อยู่ของตนเอง</div></li>\n<li><div class=\"step-num\">4</div><div>อธิษฐานขอพรในสิ่งที่ต้องการด้วยใจบริสุทธิ์</div></li>\n<li><div class=\"step-num\">5</div><div>ปักธูปที่กระถาง แล้วกราบ 3 ครั้ง</div></li>\n<li><div class=\"step-num\">6</div><div>เผากระดาษเงินกระดาษทองเพื่อถวายองค์เทพ</div></li>\n</ol>\n</div>\n<div class=\"section fi4\">\n<h2>ของไหว้ที่นิยม</h2>\n<div class=\"chips\">\n<span class=\"chip\">ธูป 3–9 ดอก</span><span class=\"chip\">ผลไม้ 5 อย่าง</span>\n<span class=\"chip\">น้ำชา</span><span class=\"chip\">ขนมเข่ง</span>\n<span class=\"chip\">ขนมเทียน</span><span class=\"chip\">กระดาษเงินทอง</span>\n<span class=\"chip\">ดอกไม้สีแดง</span>\n</div>\n</div>\n"}, "guanyin": {"title": "เจ้าแม่กวนอิม", "role": "พระโพธิสัตว์แห่งความเมตตา กรุณา และการช่วยเหลือ", "zh": "觀世音菩薩", "icon": "🪷", "image": "images/guanyin.png", "voice": "audio/guanyin.mp3", "history": "\n<div class=\"section fi3\">\n<h2>ที่มาและความหมาย</h2>\n<p>เจ้าแม่กวนอิม หรือ <span class=\"hl\">พระอวโลกิเตศวรโพธิสัตว์</span> มีความหมายว่า “ผู้สดับฟังเสียงทุกข์ของสัตว์โลก” และเป็นสัญลักษณ์สูงสุดของความเมตตากรุณาในพุทธมหายาน.</p><br/>\n<p>เมื่อเผยแผ่เข้าสู่จีน ความศรัทธาต่อพระโพธิสัตว์องค์นี้ค่อย ๆ ปรากฏในภาพลักษณ์สตรีผู้สงบ อ่อนโยน และพร้อมช่วยเหลือทุกชีวิต.</p>\n</div>\n<div class=\"section fi4\">\n<h2>ความสำคัญ</h2>\n<p>ผู้ศรัทธานิยมสักการะเจ้าแม่กวนอิมเพื่อขอ <span class=\"hl\">ความเมตตา การคุ้มครอง สุขภาพ ครอบครัว และการปล่อยวางจากความทุกข์</span>.</p><br/>\n<p>เจ้าแม่กวนอิมยังเป็นแบบอย่างแห่ง <span class=\"hl\">การให้อภัย การเสียสละ และการทำความดี</span> จึงได้รับความเคารพทั้งในวัดพุทธและศาลเจ้าจีน.</p>\n</div>\n<div class=\"section fi4\">\n<h2>วันสำคัญ</h2>\n<p>ในชุมชนชาวจีนและชาวไทยเชื้อสายจีน นิยมบูชาเจ้าแม่กวนอิมในวันพระจีน และในวันสำคัญของพระองค์ เช่น <span class=\"hl\">วันที่ 19 เดือน 2 จีน</span> ตามธรรมเนียมที่สืบทอดกันมา.</p>\n</div>\n", "bless": "\n<div class=\"section fi3\">\n<h2>ขอพรได้เรื่องอะไรบ้าง</h2>\n<div class=\"bless-grid\">\n<div class=\"bless-item\"><span class=\"bless-icon\">🤍</span><span class=\"bless-text\">เมตตาและใจสงบ</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🕊️</span><span class=\"bless-text\">คุ้มครองจากภัย</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">👪</span><span class=\"bless-text\">ครอบครัวอบอุ่น</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🍀</span><span class=\"bless-text\">สุขภาพและความเป็นสิริมงคล</span></div>\n</div>\n</div>\n<div class=\"section fi4\">\n<h2>วันมงคลในการขอพร</h2>\n<div class=\"date-stack\">\n<div class=\"date-badge\">วัน 19 เดือน 2 จีน</div>\n<div class=\"date-badge\">วันพระจีน</div>\n<div class=\"date-badge\">ช่วงเทศกาลกินเจหรือวันสำคัญทางศรัทธา</div>\n</div>\n</div>\n", "ritual": "\n<div class=\"section fi3\">\n<h2>ขั้นตอนการไหว้</h2>\n<ol class=\"ritual-list\">\n<li><div class=\"step-num\">1</div><div>แต่งกายสุภาพและทำใจให้สงบ</div></li>\n<li><div class=\"step-num\">2</div><div>จุดธูป 3 ดอก หรือถวายดอกบัว / น้ำสะอาดตามความเหมาะสม</div></li>\n<li><div class=\"step-num\">3</div><div>กล่าวชื่อ–นามสกุล และตั้งจิตอธิษฐานด้วยความจริงใจ</div></li>\n<li><div class=\"step-num\">4</div><div>ขอพรเรื่องความเมตตา สุขภาพ ครอบครัว หรือการคลายทุกข์</div></li>\n<li><div class=\"step-num\">5</div><div>กราบอย่างสงบและสำรวม</div></li>\n<li><div class=\"step-num\">6</div><div>ตั้งใจประพฤติดีและช่วยเหลือผู้อื่นเป็นการสืบต่อพรแห่งเมตตา</div></li>\n</ol>\n</div>\n<div class=\"section fi4\">\n<h2>ของไหว้ที่นิยม</h2>\n<div class=\"chips\">\n<span class=\"chip\">ธูป 3 ดอก</span><span class=\"chip\">น้ำสะอาด</span><span class=\"chip\">ดอกบัว</span><span class=\"chip\">ผลไม้</span><span class=\"chip\">อาหารเจ</span><span class=\"chip\">เทียน</span>\n</div>\n</div>\n"}, "mazu": {"title": "เจ้าแม่ทับทิม", "role": "เทพีแห่งท้องทะเล ผู้คุ้มครองการเดินทาง", "zh": "媽祖", "icon": "🌊", "image": "images/mazu.png", "voice": "audio/mazu.mp3", "history": "\n<div class=\"section fi3\">\n<h2>ที่มาและตำนาน</h2>\n<p>เจ้าแม่ทับทิม หรือ <span class=\"hl\">“หม่าโจ้ว” (Mazu)</span> มีนามเดิมว่า <span class=\"hl\">หลิน โม่เหนียง</span> ตามตำนานเป็นหญิงผู้เปี่ยมด้วยเมตตาและมีญาณวิเศษในการช่วยผู้ประสบภัยทางทะเล.</p><br/>\n<p>หลังจากสิ้นชีวิต ชาวบ้านได้สร้างศาลขึ้นบูชา และสืบทอดความศรัทธาจนเจ้าแม่ทับทิมกลายเป็นเทพีสำคัญของชาวจีนชายฝั่งทะเลและชาวจีนโพ้นทะเลจำนวนมาก.</p>\n</div>\n<div class=\"section fi4\">\n<h2>ความสำคัญ</h2>\n<p>เจ้าแม่ทับทิมได้รับการเคารพในฐานะ <span class=\"hl\">ผู้พิทักษ์นักเดินทางและชาวเรือ</span> โดยเฉพาะผู้ที่เดินทางไกล ค้าขาย หรือเริ่มต้นชีวิตในต่างแดน.</p><br/>\n<p>ท่านยังเป็นสัญลักษณ์ของ <span class=\"hl\">ความเมตตา ความกตัญญู และการช่วยเหลือผู้อื่น</span> ซึ่งเป็นคุณธรรมที่ชุมชนจีนยกย่องสืบมา.</p>\n</div>\n<div class=\"section fi4\">\n<h2>วันสำคัญ</h2>\n<p>วันเทวสมภพของเจ้าแม่ทับทิมนิยมตรงกับ <span class=\"hl\">วัน 23 เดือน 3 ตามปฏิทินจีน</span> และมักมีพิธีบวงสรวงหรือจัดงานเฉลิมฉลองในศาลเจ้าหลายแห่ง.</p>\n</div>\n", "bless": "\n<div class=\"section fi3\">\n<h2>ขอพรได้เรื่องอะไรบ้าง</h2>\n<div class=\"bless-grid\">\n<div class=\"bless-item\"><span class=\"bless-icon\">🌊</span><span class=\"bless-text\">เดินทางปลอดภัย</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">⛵</span><span class=\"bless-text\">คุ้มครองผู้ค้าขายและผู้เดินเรือ</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">💗</span><span class=\"bless-text\">เมตตาและความกตัญญู</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🏮</span><span class=\"bless-text\">สิริมงคลแก่ครอบครัว</span></div>\n</div>\n</div>\n<div class=\"section fi4\">\n<h2>วันมงคลในการขอพร</h2>\n<div class=\"date-stack\">\n<div class=\"date-badge\">วัน 23 เดือน 3 ตามปฏิทินจีน</div>\n<div class=\"date-badge\">วันขึ้น 1 ค่ำ ทุกเดือน</div>\n<div class=\"date-badge\">วันขึ้น 15 ค่ำ ทุกเดือน</div>\n</div>\n</div>\n", "ritual": "\n<div class=\"section fi3\">\n<h2>ขั้นตอนการไหว้</h2>\n<ol class=\"ritual-list\">\n<li><div class=\"step-num\">1</div><div>เตรียมของไหว้และแต่งกายสุภาพ</div></li>\n<li><div class=\"step-num\">2</div><div>จุดธูป 3 หรือ 5 ดอก แล้วตั้งจิตระลึกถึงพระคุณของเจ้าแม่</div></li>\n<li><div class=\"step-num\">3</div><div>กล่าวชื่อ–นามสกุล พร้อมบอกสิ่งที่ขอพร</div></li>\n<li><div class=\"step-num\">4</div><div>ขอพรเรื่องการเดินทาง ความปลอดภัย ความเมตตา หรือความราบรื่นในชีวิต</div></li>\n<li><div class=\"step-num\">5</div><div>ปักธูปและกราบ 3 ครั้ง</div></li>\n<li><div class=\"step-num\">6</div><div>หากมีการถวายกระดาษเงินทองให้เผาตามธรรมเนียม</div></li>\n</ol>\n</div>\n<div class=\"section fi4\">\n<h2>ของไหว้ที่นิยม</h2>\n<div class=\"chips\">\n<span class=\"chip\">ธูป 3–5 ดอก</span><span class=\"chip\">น้ำชา</span><span class=\"chip\">ผลไม้</span><span class=\"chip\">ขนมมงคล</span><span class=\"chip\">ดอกไม้สีแดง</span><span class=\"chip\">กระดาษเงินทอง</span>\n</div>\n</div>\n"}, "caishen": {"title": "เทพเจ้าไฉ่ซิงเอี้ย", "role": "เทพแห่งโชคลาภ การเงิน และความรุ่งเรือง", "zh": "財神爺", "icon": "💰", "image": "images/caishen.png", "voice": "audio/caishen.mp3", "history": "\n<div class=\"section fi3\">\n<h2>ที่มาและลักษณะ</h2>\n<p>ไฉ่ซิงเอี้ย คือเทพเจ้าแห่งโชคลาภ การเงิน และความมั่งคั่งที่ชาวจีนให้ความเคารพบูชากันอย่างแพร่หลาย โดยเฉพาะในช่วงตรุษจีนซึ่งถือเป็นฤกษ์ดีในการต้อนรับโชคลาภเข้าสู่บ้าน.</p><br/>\n<p>ในคติที่แพร่หลาย ท่านมักเชื่อมโยงกับ <span class=\"hl\">จ้าวกงหมิง</span> และมักปรากฏในรูปขุนนางผู้สูงศักดิ์ ถือคฑา ยู่อี่ ถุงเงิน หรือตำลึงทอง.</p>\n</div>\n<div class=\"section fi4\">\n<h2>ความสำคัญ</h2>\n<p>ผู้ศรัทธานิยมสักการะไฉ่ซิงเอี้ยเพื่อขอ <span class=\"hl\">ความมั่งคั่ง ความสำเร็จทางธุรกิจ และโอกาสทางการเงิน</span> โดยเฉพาะผู้ประกอบการและพ่อค้า.</p><br/>\n<p>การไหว้รับไฉ่ซิงเอี้ยในช่วงปีใหม่จีนเป็นธรรมเนียมสำคัญที่สะท้อนความหวังให้ทั้งปีเต็มไปด้วยโชคลาภและการค้าขายที่ราบรื่น.</p>\n</div>\n<div class=\"section fi4\">\n<h2>ช่วงนิยมบูชา</h2>\n<p>นิยมบูชาอย่างมากในช่วง <span class=\"hl\">คืนวันส่งท้ายปีเก่าจีนต่อเนื่องสู่วันขึ้นปีใหม่จีน</span> รวมถึงวันพระจีนหรือวันเปิดกิจการใหม่.</p>\n</div>\n", "bless": "\n<div class=\"section fi3\">\n<h2>ขอพรได้เรื่องอะไรบ้าง</h2>\n<div class=\"bless-grid\">\n<div class=\"bless-item\"><span class=\"bless-icon\">💰</span><span class=\"bless-text\">โชคลาภและทรัพย์สิน</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">📈</span><span class=\"bless-text\">การค้าขายรุ่งเรือง</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🧧</span><span class=\"bless-text\">รับโอกาสทางการเงิน</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🏪</span><span class=\"bless-text\">กิจการมั่นคง</span></div>\n</div>\n</div>\n<div class=\"section fi4\">\n<h2>วันมงคลในการขอพร</h2>\n<div class=\"date-stack\">\n<div class=\"date-badge\">คืนวันส่งท้ายปีเก่าจีน</div>\n<div class=\"date-badge\">วันตรุษจีน</div>\n<div class=\"date-badge\">วันเปิดกิจการหรือวันมงคลส่วนตัว</div>\n</div>\n</div>\n", "ritual": "\n<div class=\"section fi3\">\n<h2>ขั้นตอนการไหว้</h2>\n<ol class=\"ritual-list\">\n<li><div class=\"step-num\">1</div><div>จัดโต๊ะบูชาให้สะอาดเรียบร้อย</div></li>\n<li><div class=\"step-num\">2</div><div>จุดธูป 5 ดอก เพื่อเชิญรับพรแห่งโชคลาภ</div></li>\n<li><div class=\"step-num\">3</div><div>กล่าวชื่อ–นามสกุล และตั้งจิตขอพรเรื่องการเงินหรือกิจการ</div></li>\n<li><div class=\"step-num\">4</div><div>อธิษฐานให้การค้าขายราบรื่น มีผู้เกื้อหนุน และใช้ทรัพย์อย่างถูกต้อง</div></li>\n<li><div class=\"step-num\">5</div><div>ปักธูป กราบ 3 ครั้ง</div></li>\n<li><div class=\"step-num\">6</div><div>เผากระดาษเงินกระดาษทองหรือรับซองมงคลตามธรรมเนียม</div></li>\n</ol>\n</div>\n<div class=\"section fi4\">\n<h2>ของไหว้ที่นิยม</h2>\n<div class=\"chips\">\n<span class=\"chip\">ธูป 5 ดอก</span><span class=\"chip\">ผลไม้ 5 อย่าง</span><span class=\"chip\">น้ำชา</span><span class=\"chip\">ขนมเปี๊ยะ</span><span class=\"chip\">เหรียญหรือตำลึงทอง</span><span class=\"chip\">กระดาษเงินทอง</span>\n</div>\n</div>\n"}, "nezha": {"title": "นาจาซาไท่จื้อ", "role": "เทพแห่งความกล้าหาญ พลัง และการคุ้มครอง", "zh": "哪吒三太子", "icon": "⚡", "image": "images/nezha.png", "voice": "audio/nezha.mp3", "history": "\n<div class=\"section fi3\">\n<h2>ที่มาและตำนาน</h2>\n<p>องค์นาจา หรือ <span class=\"hl\">นาจาซาไท่จื้อ</span> เป็นเทพเจ้าที่ปรากฏในตำนานและวรรณกรรมจีนหลายเรื่อง เช่น <span class=\"hl\">ห้องสิน</span> และเรื่องเล่าในคติชาวบ้านจีน.</p><br/>\n<p>โดยทั่วไปท่านถูกมองว่าเป็น <span class=\"hl\">เทพนักรบผู้เยาว์วัย</span> ผู้กล้าหาญ มีอาวุธวิเศษ เช่น ห่วงทอง ผ้าคล้องฟ้า และล้อไฟลม ใช้ปราบอธรรมและคุ้มครองผู้ศรัทธา.</p>\n</div>\n<div class=\"section fi4\">\n<h2>ความสำคัญ</h2>\n<p>นาจาเป็นสัญลักษณ์ของ <span class=\"hl\">ความกล้า ความเด็ดเดี่ยว และการเอาชนะอุปสรรค</span> จึงเป็นเทพที่ผู้คนมักขอพรในเรื่องการแข่งขัน การต่อสู้กับปัญหา และการปกป้องคุ้มครอง.</p><br/>\n<p>ในคติร่วมสมัยบางพื้นที่ นาจายังได้รับความเคารพจากผู้เดินทางและผู้ขับขี่ เพราะเชื่อว่าท่านเคลื่อนไหวรวดเร็วและปกป้องภัยระหว่างทาง.</p>\n</div>\n<div class=\"section fi4\">\n<h2>ผู้ที่นิยมสักการะ</h2>\n<p>ผู้ที่ต้องเผชิญการแข่งขัน นักธุรกิจ นักกีฬา เด็กและเยาวชน หรือผู้ที่กำลังเริ่มต้นสิ่งใหม่ มักนิยมขอพรจากนาจาเพื่อเสริมพลังใจและความมั่นใจ.</p>\n</div>\n", "bless": "\n<div class=\"section fi3\">\n<h2>ขอพรได้เรื่องอะไรบ้าง</h2>\n<div class=\"bless-grid\">\n<div class=\"bless-item\"><span class=\"bless-icon\">🔥</span><span class=\"bless-text\">พลังใจและความกล้าหาญ</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🛡️</span><span class=\"bless-text\">คุ้มครองจากภัยอันตราย</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🏆</span><span class=\"bless-text\">ชัยชนะเหนืออุปสรรค</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🚗</span><span class=\"bless-text\">การเดินทางปลอดภัย</span></div>\n</div>\n</div>\n<div class=\"section fi4\">\n<h2>วันมงคลในการขอพร</h2>\n<div class=\"date-stack\">\n<div class=\"date-badge\">วันมงคลส่วนตัว</div>\n<div class=\"date-badge\">วันเริ่มต้นงานใหม่</div>\n<div class=\"date-badge\">วันพระจีนหรือวันสักการะประจำศาลเจ้า</div>\n</div>\n</div>\n", "ritual": "\n<div class=\"section fi3\">\n<h2>ขั้นตอนการไหว้</h2>\n<ol class=\"ritual-list\">\n<li><div class=\"step-num\">1</div><div>ตั้งจิตให้มั่นคงและแต่งกายสุภาพ</div></li>\n<li><div class=\"step-num\">2</div><div>จุดธูป 3 หรือ 5 ดอก</div></li>\n<li><div class=\"step-num\">3</div><div>กล่าวชื่อ–นามสกุล พร้อมบอกสิ่งที่กำลังเผชิญหรือเป้าหมายที่ต้องการ</div></li>\n<li><div class=\"step-num\">4</div><div>อธิษฐานขอความกล้าหาญ การคุ้มครอง และชัยชนะเหนืออุปสรรค</div></li>\n<li><div class=\"step-num\">5</div><div>ปักธูปและกราบ 3 ครั้ง</div></li>\n<li><div class=\"step-num\">6</div><div>ตั้งใจดำเนินชีวิตด้วยความซื่อสัตย์ กล้าทำความดี และมีวินัย</div></li>\n</ol>\n</div>\n<div class=\"section fi4\">\n<h2>ของไหว้ที่นิยม</h2>\n<div class=\"chips\">\n<span class=\"chip\">ธูป 3–5 ดอก</span><span class=\"chip\">ผลไม้</span><span class=\"chip\">น้ำชา</span><span class=\"chip\">ขนมมงคล</span><span class=\"chip\">ดอกไม้สีแดง</span><span class=\"chip\">กระดาษเงินทอง</span>\n</div>\n</div>\n"}, "tudigong": {"title": "ตี่จู้เอี๊ยะ", "role": "เทพเจ้าประจำบ้าน ผู้ดูแลที่ดินและความสงบสุข", "zh": "地主爺", "icon": "🏠", "image": "images/tudigong.png", "voice": "audio/tudigong.mp3", "history": "\n<div class=\"section fi3\">\n<h2>ที่มาและความหมาย</h2>\n<p>ตี่จู้เอี๊ยะ คือ <span class=\"hl\">เทพเจ้าประจำบ้านและเจ้าที่ของแผ่นดิน</span> ที่ชาวไทยเชื้อสายจีนเคารพบูชากันอย่างแพร่หลาย เชื่อว่าเป็นผู้ดูแลบ้านเรือน ที่ดิน และผู้คนในเขตอาศัยนั้น.</p><br/>\n<p>คำว่า “ตี่จู้” หมายถึงเจ้าแห่งแผ่นดิน ส่วน “เอี๊ยะ” เป็นคำยกย่องในความหมายของท่านผู้ใหญ่หรือเจ้าขุน จึงมีความหมายรวมว่า <span class=\"hl\">ท่านเจ้าที่ผู้คุ้มครองบ้าน</span>.</p>\n</div>\n<div class=\"section fi4\">\n<h2>ความสำคัญ</h2>\n<p>ผู้คนเชื่อว่าตี่จู้เอี๊ยะช่วย <span class=\"hl\">ปกป้องบ้านจากสิ่งอัปมงคล</span> เสริมความร่มเย็น ความปรองดอง และความเจริญในกิจการภายในบ้าน.</p><br/>\n<p>ในความเชื่อจีนดั้งเดิม เทพเจ้ากลุ่มนี้มีบทบาทผูกพันกับ “พื้นที่” หรือ “ท้องถิ่น” อย่างชัดเจน จึงเป็นเทพที่ใกล้ชิดชีวิตประจำวันมาก.</p>\n</div>\n<div class=\"section fi4\">\n<h2>วันสำคัญ</h2>\n<p>นิยมเซ่นไหว้ใน <span class=\"hl\">วันขึ้น 1 ค่ำ และ 15 ค่ำ</span> รวมทั้งวันตรุษจีน สารทจีน วันขึ้นบ้านใหม่ หรือวันที่เริ่มกิจการใหม่.</p>\n</div>\n", "bless": "\n<div class=\"section fi3\">\n<h2>ขอพรได้เรื่องอะไรบ้าง</h2>\n<div class=\"bless-grid\">\n<div class=\"bless-item\"><span class=\"bless-icon\">🏠</span><span class=\"bless-text\">บ้านอยู่เย็นเป็นสุข</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">🧿</span><span class=\"bless-text\">คุ้มครองจากสิ่งอัปมงคล</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">👨‍👩‍👧‍👦</span><span class=\"bless-text\">คนในบ้านปรองดอง</span></div>\n<div class=\"bless-item\"><span class=\"bless-icon\">💼</span><span class=\"bless-text\">กิจการมั่นคงเจริญรุ่งเรือง</span></div>\n</div>\n</div>\n<div class=\"section fi4\">\n<h2>วันมงคลในการขอพร</h2>\n<div class=\"date-stack\">\n<div class=\"date-badge\">วันขึ้น 1 ค่ำ</div>\n<div class=\"date-badge\">วันขึ้น 15 ค่ำ</div>\n<div class=\"date-badge\">ตรุษจีน / สารทจีน / วันขึ้นบ้านใหม่</div>\n</div>\n</div>\n", "ritual": "\n<div class=\"section fi3\">\n<h2>ขั้นตอนการไหว้</h2>\n<ol class=\"ritual-list\">\n<li><div class=\"step-num\">1</div><div>ทำความสะอาดบริเวณศาลหรือจุดบูชา</div></li>\n<li><div class=\"step-num\">2</div><div>จุดธูป 5 ดอก พร้อมกล่าวชื่อ–นามสกุลของผู้ไหว้</div></li>\n<li><div class=\"step-num\">3</div><div>อธิษฐานขอให้บ้านเรือนและที่ดินอยู่ร่มเย็นปลอดภัย</div></li>\n<li><div class=\"step-num\">4</div><div>ขอพรเรื่องสุขภาพ ความสามัคคี และความเจริญของผู้อยู่อาศัย</div></li>\n<li><div class=\"step-num\">5</div><div>ปักธูปและกราบด้วยความเคารพ</div></li>\n<li><div class=\"step-num\">6</div><div>ถวายกระดาษเงินทองตามความเชื่อ</div></li>\n</ol>\n</div>\n<div class=\"section fi4\">\n<h2>ของไหว้ที่นิยม</h2>\n<div class=\"chips\">\n<span class=\"chip\">ธูป 5 ดอก</span><span class=\"chip\">น้ำชา</span><span class=\"chip\">ขนมเข่ง</span><span class=\"chip\">ขนมเทียน</span><span class=\"chip\">ผลไม้</span><span class=\"chip\">กระดาษเงินทอง</span>\n</div>\n</div>\n"}};
+// ========== SPLASH ==========
+function enterShrine() {
+  const splash = document.getElementById('splash');
+  splash.style.transition = 'opacity 0.6s';
+  splash.style.opacity = '0';
+  setTimeout(() => { splash.style.display = 'none'; }, 600);
+
+  const intro = document.getElementById('introOverlay');
+  intro.style.display = 'flex';
+
+  const introSound = document.getElementById('introSound');
+  introSound.play().catch(() => {});
+
+  // canvas particles
+  (function() {
+    const canvas = document.getElementById('introCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, pts = [];
+    function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+    resize();
+    for (let i = 0; i < 40; i++) {
+      pts.push({ x: Math.random()*800, y: Math.random()*900, r: Math.random()*1.2+0.3,
+        vx: (Math.random()-0.5)*0.4, vy: -Math.random()*0.5-0.2,
+        a: Math.random(), da: Math.random()*0.012+0.004 });
+    }
+    function draw() {
+      if (intro.style.display === 'none') return;
+      ctx.clearRect(0,0,W,H);
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.a += p.da;
+        if (p.a > 1 || p.a < 0) p.da *= -1;
+        if (p.y < -10) { p.y = H+10; p.x = Math.random()*W; }
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(200,144,26,${p.a*0.7})`; ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // fade in ข้อความทีละบรรทัด
+  const delays = [300, 3000, 7000, 11000];
+  ['iLine1','iLine2','iLine3','iLine4'].forEach((id, i) => {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('show');
+    }, delays[i]);
+  });
+
+  // progress bar 14 วินาที
+  const bar = document.getElementById('introBar');
+  let prog = 0;
+  const tick = setInterval(() => {
+    prog += 100/140;
+    if (bar) bar.style.width = Math.min(prog, 100) + '%';
+    if (prog >= 100) clearInterval(tick);
+  }, 100);
+
+  // รอ 14 วินาที (ตามความยาวเสียง) แล้วเข้าหน้าหลัก
+  setTimeout(() => {
+    intro.style.transition = 'opacity 0.8s';
+    intro.style.opacity = '0';
+    setTimeout(() => {
+      intro.style.display = 'none';
+      introSound.pause();
+      bgSound.volume = 0.18;
+      bgSound.play().catch(() => {});
+      setTimeout(async () => { await autoPlayVoice(); }, 200);
+    }, 800);
+  }, 14000);
+}
+
+// canvas particles on splash
+(function() {
+  const canvas = document.getElementById('splashCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, pts = [];
+  function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  for (let i = 0; i < 55; i++) {
+    pts.push({ x: Math.random()*800, y: Math.random()*900, r: Math.random()*1.4+0.3,
+      vx: (Math.random()-0.5)*0.4, vy: -Math.random()*0.6-0.2,
+      a: Math.random(), da: Math.random()*0.012+0.004 });
+  }
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.a += p.da;
+      if (p.a > 1 || p.a < 0) p.da *= -1;
+      if (p.y < -10) { p.y = H+10; p.x = Math.random()*W; }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(200,144,26,${p.a*0.7})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ปิดเสียงเมื่อออก/สลับแอป
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    bgSound.pause();
+    if (activeVoice) { activeVoice.pause(); }
+  }
+});
+
+const deityOrder = ["tiangong", "pungtaogong", "guanyin", "mazu", "caishen", "nezha", "tudigong"];
+
+const selectorScroll = document.getElementById('selectorScroll');
+const heroTitle = document.getElementById('heroTitle');
+const heroRole = document.getElementById('heroRole');
+const heroZh = document.getElementById('heroZh');
+const heroImage = document.getElementById('heroImage');
+const heroImageNote = {textContent:''};
+const voiceNote = {textContent:''};
+const detailContent = document.getElementById('detailContent');
+const voiceAudioHolder = document.getElementById('voiceAudioHolder');
+
+const bgSound = document.getElementById('bgSound');
+const playMusicBtn = {addEventListener:()=>{}};
+const stopMusicBtn = {addEventListener:()=>{}};
+const playVoiceBtn = {textContent:'',addEventListener:()=>{}};
+const stopVoiceBtn = {addEventListener:()=>{}};
+
+let currentKey = deityOrder[0];
+let activeVoice = null;
+const defaultBgVolume = 0.18;
+const duckBgVolume = 0.06;
+bgSound.volume = defaultBgVolume;
+
+
+function buildSelector() {
+  selectorScroll.innerHTML = deityOrder.map(key => {
+    const d = deityData[key];
+    return `
+      <a href="#top" class="deity-chip ${key === currentKey ? 'active' : ''}" data-key="${key}">
+        <div class="deity-chip-top">
+          <div class="deity-chip-icon">${d.icon}</div>
+          <div class="deity-chip-name">${d.title}</div>
+        </div>
+        <div class="deity-chip-role">${d.role}</div>
+      </a>
+    `;
+  }).join('');
+  selectorScroll.querySelectorAll('.deity-chip').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showDeity(btn.dataset.key);
+    });
+  });
+}
+
+// preload รูปและเสียงทั้งหมด
+function preloadAll() {
+  const _cache = {};
+  deityOrder.forEach(key => {
+    const d = deityData[key];
+    const img = new Image(); img.src = d.image; _cache[key+'_img'] = img;
+    const audio = new Audio(); audio.preload = 'auto'; audio.src = d.voice; _cache[key+'_aud'] = audio;
+  });
+}
+preloadAll();
+
+// toggle เพลง
+function toggleMusic() {
+  const btn = document.getElementById('musicToggleBtn');
+  if (bgSound.paused) {
+    bgSound.play().catch(()=>{});
+    if (btn) btn.textContent = '🔊';
+  } else {
+    bgSound.pause();
+    if (btn) btn.textContent = '🔇';
+  }
+}
+
+// เล่นบรรยายอัตโนมัติ
+async function autoPlayVoice() {
+  const audio = document.getElementById('voice-' + currentKey);
+  if (!audio) return;
+  try {
+    audio.currentTime = 0;
+    activeVoice = audio;
+    if (!bgSound.paused) bgSound.volume = duckBgVolume;
+    await audio.play();
+    const btn = document.getElementById('voiceStopBtn');
+    if (btn) btn.classList.add('visible');
+    audio.onended = () => {
+      if (!bgSound.paused) bgSound.volume = defaultBgVolume;
+      activeVoice = null;
+      const b = document.getElementById('voiceStopBtn');
+      if (b) b.classList.remove('visible');
+    };
+  } catch(e) {}
+}
+
+function ensureVoiceAudios() {
+  voiceAudioHolder.innerHTML = deityOrder.map(key => `
+    <!-- หมายเหตุ: วางไฟล์เสียงบรรยายของ${deityData[key].title}ไว้ที่ ${deityData[key].voice} -->
+    <audio id="voice-${key}" preload="auto">
+      <source src="${deityData[key].voice}" type="audio/mpeg">
+    </audio>
+  `).join('');
+}
+
+function showDeity(key) {
+  currentKey = key;
+  const d = deityData[key];
+  [heroTitle, heroRole, heroZh, heroImage].forEach(el => el && el.classList.add('fading'));
+  setTimeout(() => {
+    heroTitle.textContent = d.title;
+    heroRole.textContent = d.role;
+    heroZh.textContent = d.zh;
+    heroImage.src = d.image;
+    heroImage.alt = d.title;
+    detailContent.innerHTML = `
+      <div class="page-section active" id="section-history">${d.history}</div>
+      <div class="page-section active" id="section-bless">${d.bless}</div>
+      <div class="page-section active" id="section-ritual">${d.ritual}</div>
+    `;
+    [heroTitle, heroRole, heroZh, heroImage].forEach(el => el && el.classList.remove('fading'));
+    buildSelector();
+    stopVoice();
+    window.scrollTo({top:0, behavior:'smooth'});
+    setTimeout(() => autoPlayVoice(), 200);
+  }, 280);
+}
+
+async function playMusic() {
+  try {
+    await bgSound.play();
+      } catch (err) {
+        console.log('Audio play failed:', err);
+  }
+}
+
+function stopMusic() {
+  bgSound.pause();
+  }
+
+function stopVoice() {
+  if (activeVoice) {
+    activeVoice.pause();
+    activeVoice.currentTime = 0;
+  }
+  activeVoice = null;
+  if (!bgSound.paused) bgSound.volume = defaultBgVolume;
+  const btn = document.getElementById('voiceStopBtn');
+  if (btn) btn.classList.remove('visible');
+}
+
+async function playVoice() {
+  const audio = document.getElementById('voice-' + currentKey);
+  if (!audio) return;
+
+  if (activeVoice && activeVoice !== audio) {
+    activeVoice.pause();
+    activeVoice.currentTime = 0;
+  }
+
+  if (audio.paused) {
+    try {
+      audio.currentTime = 0;
+      activeVoice = audio;
+      if (!bgSound.paused) bgSound.volume = duckBgVolume;
+      await audio.play();
+    } catch (err) {
+      console.log('Voice play failed:', err);
+    }
+  } else {
+    stopVoice();
+  }
+
+  audio.onended = () => {
+    if (!bgSound.paused) bgSound.volume = defaultBgVolume;
+    activeVoice = null;
+  };
+}
+
+
+const pc = document.getElementById('particles');
+for (let i = 0; i < 14; i++) {
+  const p = document.createElement('div');
+  p.className = 'p';
+  p.style.setProperty('--x', Math.random() * 100 + '%');
+  p.style.setProperty('--dur', (4 + Math.random() * 5) + 's');
+  p.style.setProperty('--delay', (Math.random() * 7) + 's');
+  pc.appendChild(p);
+}
+
+ensureVoiceAudios();
+buildSelector();
+showDeity(currentKey);
+</script>
+</body>
+</html>

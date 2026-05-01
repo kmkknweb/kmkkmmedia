@@ -792,7 +792,7 @@ function startGyroSync(viewer){
       deviceYawAtCalib = e.alpha;
     }
 
-    let relativeYaw = -(e.alpha - deviceYawAtCalib);
+    let relativeYaw = -(e.alpha - deviceYawAtCalib)  + 180;
     while(relativeYaw > 180) relativeYaw -= 360;
     while(relativeYaw < -180) relativeYaw += 360;
 

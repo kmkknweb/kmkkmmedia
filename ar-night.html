@@ -746,6 +746,8 @@ function showScreen(id){
 function initViewer(containerId, sceneData){
   return pannellum.viewer(containerId, {
     type: 'equirectangular',
+haov: 360,
+vaov: 90,
     panorama: sceneData.pano,
     autoLoad: true,
     autoRotate: 0,

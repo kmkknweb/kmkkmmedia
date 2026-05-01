@@ -200,7 +200,7 @@ function initViewer(containerId, scene){
    หันไปทิศ 219°             → yaw = 219-39 = 180° → เห็นด้านหลัง
    ============================================================ */
 function compassToYaw(alpha){
-  let yaw = alpha - DOOR_BEARING;
+  let yaw = DOOR_BEARING - alpha;
   while(yaw > 180) yaw -= 360;
   while(yaw < -180) yaw += 360;
   return yaw;

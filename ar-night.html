@@ -685,7 +685,7 @@ body {
 
 <script>
 /* ===== CONFIG =====
-   yaw 0° = ประตูทางเข้าหลักศาลเจ้า
+   yaw 0° = ภายใน = ประตูศาลเจ้า  , ภายนอก = เทพฟ้าดิน
    ผู้ใช้ต้องหันหน้าไปทางประตูก่อนกด calibrate
    ================================================ */
 const SCENES = {
@@ -702,7 +702,7 @@ const SCENES = {
     label: '📍 ภายนอกศาลเจ้า',
     // TODO: เปลี่ยนเป็น pano/pano_front_night.jpg
     pano: 'pano/pano_front_night.jpg',
-    startYaw: -180,   // 0° = ประตูทางเข้า
+    startYaw: 0,   // 0° = เทพฟ้าดิน
     startPitch: 0,
   }
 };

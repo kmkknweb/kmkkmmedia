@@ -609,7 +609,36 @@ filter:blur(14px);
   50%{transform:scale(1.18);opacity:1;}
 }
 
+.ancestor-float{
+  position:absolute;
+  width:180px;
+  max-width:55vw;
+  top:34%;
+  left:50%;
+  transform:translate(-50%, 30px) scale(.85);
+  opacity:0;
+  filter:
+    drop-shadow(0 0 18px rgba(242,196,107,.9))
+    drop-shadow(0 0 40px rgba(255,220,140,.45));
+  transition:
+    opacity 1s ease,
+    transform 1.2s ease;
+}
 
+#sacred-effect.active .ancestor-float{
+  opacity:1;
+  transform:translate(-50%, -20px) scale(1);
+  animation:ancestorFloat 3.5s ease-in-out infinite 1.1s;
+}
+
+@keyframes ancestorFloat{
+  0%,100%{
+    transform:translate(-50%, -20px) scale(1);
+  }
+  50%{
+    transform:translate(-50%, -38px) scale(1.03);
+  }
+}
 
 
   
@@ -739,6 +768,8 @@ filter:blur(14px);
   
 <div id="sacred-effect">
   <div class="sacred-glow"></div>
+  <img class="ancestor-float" src="images/kongma.png" alt="อากงอาม่า">
+  
   <div class="sacred-text">✨ ส่องถึงองค์เทพฯ ✨</div>
 </div>
 

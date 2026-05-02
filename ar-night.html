@@ -1177,6 +1177,7 @@ function closeAR(){
   document.getElementById('screen-ar').style.display = 'none';
   document.getElementById('ar-hud').style.display = 'none';
   document.getElementById('btn-close-ar').style.display = 'none';
+  document.getElementById('btn-vr-mode').style.display='none';
   document.getElementById('opacity-control').style.display = 'none';
   document.getElementById('scene-selector').style.display = 'none';
   showScreen('screen-landing');
@@ -1211,6 +1212,8 @@ document.getElementById('btn-close-ar').addEventListener('click', closeAR);
 document.getElementById('btn-scene-inside').addEventListener('click', () => switchScene('inside'));
 document.getElementById('btn-scene-outside').addEventListener('click', () => switchScene('outside'));
 document.getElementById('btn-grant-camera').addEventListener('click', async () => {
+  document.getElementById('btn-vr-mode').addEventListener('click', startVR);
+document.getElementById('btn-exit-vr').addEventListener('click', exitVR);
   document.getElementById('permission-overlay').style.display = 'none';
   await startAR(currentScene, false);
 });

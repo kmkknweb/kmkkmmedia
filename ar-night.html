@@ -558,6 +558,61 @@ body {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-text { font-size: 14px; color: var(--gold); }
+
+
+
+#sacred-effect{
+  position:fixed;
+  inset:0;
+  z-index:18;
+  pointer-events:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  transition:opacity .8s ease;
+}
+
+#sacred-effect.active{
+  opacity:1;
+}
+
+.sacred-glow{
+  position:absolute;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle,
+    rgba(242,196,107,.9) 0%,
+    rgba(242,196,107,.35) 28%,
+    rgba(180,90,255,.18) 55%,
+    transparent 72%);
+  filter:blur(8px);
+  animation:sacredPulse 2.2s ease-in-out infinite;
+}
+
+.sacred-text{
+  position:absolute;
+  bottom:145px;
+  color:#f2c46b;
+  font-size:16px;
+  font-weight:700;
+  text-shadow:0 0 18px rgba(242,196,107,.9);
+  background:rgba(0,0,0,.45);
+  border:1px solid rgba(242,196,107,.35);
+  border-radius:24px;
+  padding:8px 18px;
+}
+
+@keyframes sacredPulse{
+  0%,100%{transform:scale(.9);opacity:.65;}
+  50%{transform:scale(1.18);opacity:1;}
+}
+
+
+
+
+  
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;600;700&family=Cinzel:wght@600&display=swap" rel="stylesheet">
 </head>
@@ -680,6 +735,14 @@ body {
   <span class="opacity-label">🌙</span>
 </div>
 
+
+  
+<div id="sacred-effect">
+  <div class="sacred-glow"></div>
+  <div class="sacred-text">✨ ส่องถึงองค์เทพฯ ✨</div>
+</div>
+
+  
 <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
 

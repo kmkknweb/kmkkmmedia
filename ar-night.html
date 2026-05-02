@@ -910,9 +910,9 @@ function startGyroSync(viewer){
   gyroHandler = (e) => {
     if(e.alpha === null) return;
 
-    if(deviceYawAtCalib === null){
+  /*  if(deviceYawAtCalib === null){
       deviceYawAtCalib = e.alpha;
-    }
+    }. */
 
     let relativeYaw = -(e.alpha - deviceYawAtCalib) ;
     while(relativeYaw > 180) relativeYaw -= 360;
@@ -943,13 +943,13 @@ function goToCalibrate(scene){
   showScreen('screen-calibrate');
 }
 
-/* ===== CALIBRATE → START AR ===== */
+/* ===== CALIBRATE → START AR ===== 
 async function confirmCalibAndStart(){
   const btn = document.getElementById('btn-confirm-calib');
   btn.disabled = true;
   btn.textContent = '⏳ กำลังขอสิทธิ์...';
 
-  /* iOS: ขอ gyro permission ก่อน (ต้องมาจาก user gesture) */
+  iOS: ขอ gyro permission ก่อน (ต้องมาจาก user gesture) 
   const gyroOk = await requestGyroPermission();
   if(!gyroOk){
     btn.disabled = false;
@@ -962,8 +962,47 @@ async function confirmCalibAndStart(){
   btn.disabled = false;
   btn.innerHTML = '<span>🚪</span><span>ฉันหันหน้าไปทางประตูแล้ว · เริ่ม AR</span>';
   await startAR(currentScene, isGyroMode);
-}
+  } */
 
+  /* ===== CALIBRATE → START AR ===== */
+
+async function confirmCalibAndStart(){
+  const btn = document.getElementById('btn-confirm-calib');
+  btn.disabled = true;
+
+  const gyroOk = await requestGyroPermission();
+  if(!gyroOk){
+    btn.disabled = false;
+    alert('เปิด Gyroscope ไม่ได้');
+    return;
+  }
+
+  // ✅ สำคัญมาก — reset ก่อน
+  deviceYawAtCalib = null;
+
+  // ✅ รอค่า gyro จริงก่อน
+  const waitYaw = () => new Promise(resolve => {
+    const handler = (e) => {
+      if(e.alpha !== null){
+        deviceYawAtCalib = e.alpha; // ← ตั้งค่าตรงนี้
+        window.removeEventListener('deviceorientation', handler);
+        resolve();
+      }
+    };
+    window.addEventListener('deviceorientation', handler);
+  });
+
+  await waitYaw();
+
+  btn.disabled = false;
+
+  await startAR(currentScene, isGyroMode);
+  }
+
+
+
+
+  
 /* ===== OPEN CAMERA ===== */
 async function openCamera(){
   document.getElementById('loading-overlay').style.display = 'flex';

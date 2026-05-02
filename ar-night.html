@@ -776,6 +776,32 @@ let viewerAR = null;
 let isGyroMode = false;
 let calibratedYaw = 0;  // yaw ตอนที่ผู้ใช้กด calibrate
 
+  const SACRED_YAW_INSIDE = 180;
+const SACRED_RANGE = 14;
+let sacredActive = false;
+
+function yawDistance(a, b){
+  let d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+}
+
+function checkSacredEffect(yaw){
+  const el = document.getElementById('sacred-effect');
+  if(!el) return;
+
+  const near = currentScene === 'inside' && yawDistance(yaw, SACRED_YAW_INSIDE) <= SACRED_RANGE;
+
+  if(near && !sacredActive){
+    sacredActive = true;
+    el.classList.add('active');
+  }
+
+  if(!near && sacredActive){
+    sacredActive = false;
+    el.classList.remove('active');
+  }
+}
+
 /* ===== STARS ===== */
 const starsEl = document.getElementById('stars');
 for(let i = 0; i < 80; i++){
@@ -858,7 +884,7 @@ function startGyroSync(viewer){
     let relativeYaw = -(e.alpha - deviceYawAtCalib) ;
     while(relativeYaw > 180) relativeYaw -= 360;
     while(relativeYaw < -180) relativeYaw += 360;
-
+checkSacredEffect(relativeYaw);
     const pitch = Math.max(-85, Math.min(85, e.beta - 90));
     try {
       viewer.setYaw(relativeYaw, false);

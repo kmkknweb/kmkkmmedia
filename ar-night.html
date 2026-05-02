@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>AR กลางคืน · ศาลเจ้าปึงเถ่ากงม่า</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--gold:#f2c46b;--gold-deep:#c8901a;--ink:#0d0b10;}
+body{background:#000;overflow:hidden;font-family:'Noto Serif Thai',serif;width:100vw;height:100vh;position:fixed;}
+.stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--d) ease-in-out infinite var(--delay);}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(1);}50%{opacity:1;transform:scale(1.5);}}
+#screen-landing{position:fixed;inset:0;z-index:10;background:radial-gradient(ellipse at 50% 25%,#2a0a1a 0%,#0d0b10 55%,#000 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;}
+.shrine-icon{font-size:54px;margin-bottom:12px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(242,196,107,.6));}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.landing-title{font-size:21px;font-weight:700;color:var(--gold);margin-bottom:6px;line-height:1.45;text-shadow:0 0 28px rgba(242,196,107,.45);}
+.landing-sub{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:8px;}
+.landing-desc{font-size:13.5px;color:rgba(255,220,140,.7);line-height:1.85;margin-bottom:28px;max-width:310px;}
+.divider{display:flex;align-items:center;gap:10px;width:100%;max-width:280px;margin-bottom:24px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;}
+.divider::before{background:linear-gradient(to right,transparent,var(--gold-deep));}
+.divider::after{background:linear-gradient(to left,transparent,var(--gold-deep));}
+.divider span{font-size:15px;}
+.btn-group{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;}
+.btn-ar{padding:15px 22px;border:none;border-radius:12px;font-family:'Noto Serif Thai',serif;font-size:15px;font-weight:700;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;transition:transform .15s;}
+.btn-ar:active{transform:scale(.97);}
+.btn-ar-main{background:linear-gradient(135deg,#1a0a2e,#2d1060,#1a0a2e);border:1px solid rgba(180,100,255,.45);color:#e0b8ff;box-shadow:0 0 28px rgba(150,50,255,.25),0 4px 18px rgba(0,0,0,.5);}
+.btn-ar-main::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(200,150,255,.1),transparent);animation:shimmer 3s ease-in-out infinite;}
+@keyframes shimmer{0%{left:-100%}50%,100%{left:150%}}
+.btn-ar-outside{background:linear-gradient(135deg,rgba(200,144,26,.18),rgba(242,196,107,.08));border:1px solid rgba(242,196,107,.35);color:var(--gold);}
+.btn-gyro{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.55);padding:11px 22px;border-radius:12px;font-size:12px;cursor:pointer;touch-action:manipulation;font-family:'Noto Serif Thai',serif;display:flex;align-items:center;justify-content:center;gap:8px;}
+#screen-ar{position:fixed;inset:0;z-index:5;display:none;}
+#camera-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;display:none;}
+#pano-overlay{position:fixed;inset:0;z-index:2;display:none;opacity:.85;pointer-events:none;}
+#pano-container{position:fixed;inset:0;z-index:2;display:none;}
+#gyro-label{position:fixed;bottom:200px;left:50%;transform:translateX(-50%);z-index:6;font-size:12px;color:rgba(255,255,255,.35);pointer-events:none;display:none;white-space:nowrap;}
+#ar-hud{position:fixed;top:0;left:0;right:0;z-index:20;padding:14px 16px;background:linear-gradient(to bottom,rgba(0,0,0,.7),transparent);display:none;align-items:center;justify-content:space-between;pointer-events:none;}
+.hud-badge{background:rgba(200,50,80,.85);border:1px solid rgba(255,100,120,.35);border-radius:20px;padding:5px 12px;font-size:11px;color:#fff;font-weight:700;letter-spacing:.5px;display:flex;align-items:center;gap:5px;}
+.hud-dot{width:6px;height:6px;border-radius:50%;background:#ff4060;animation:blink 1s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hud-title{font-size:12px;color:rgba(242,196,107,.9);font-weight:700;text-shadow:0 1px 8px rgba(0,0,0,.8);}
+#compass-bar{position:fixed;top:58px;left:50%;transform:translateX(-50%);z-index:20;background:rgba(0,0,0,.7);border:1px solid rgba(242,196,107,.25);border-radius:20px;padding:6px 16px;font-size:11px;color:rgba(242,196,107,.8);backdrop-filter:blur(8px);display:none;white-space:nowrap;}
+#btn-close-ar{position:fixed;top:12px;right:14px;z-index:25;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:12px;padding:7px 14px;border-radius:20px;cursor:pointer;touch-action:manipulation;backdrop-filter:blur(8px);display:none;}
+#scene-selector{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:20;display:none;gap:8px;}
+.scene-btn{padding:7px 16px;border-radius:20px;border:1px solid rgba(242,196,107,.28);background:rgba(0,0,0,.6);color:rgba(242,196,107,.65);font-size:11px;cursor:pointer;touch-action:manipulation;font-family:'Noto Serif Thai',serif;backdrop-filter:blur(8px);transition:all .2s;}
+.scene-btn.active{background:rgba(200,144,26,.28);border-color:var(--gold);color:var(--gold);}
+#opacity-control{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);z-index:20;display:none;align-items:center;gap:10px;background:rgba(0,0,0,.6);border:1px solid rgba(242,196,107,.22);border-radius:30px;padding:10px 18px;backdrop-filter:blur(10px);}
+.op-label{font-size:11px;color:var(--gold);}
+#opacity-slider{-webkit-appearance:none;width:130px;height:4px;border-radius:2px;background:linear-gradient(to right,var(--gold-deep),var(--gold));outline:none;}
+#opacity-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;}
+#permission-overlay{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.92);display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;}
+.perm-icon{font-size:46px;margin-bottom:14px;}
+.perm-title{font-size:18px;color:var(--gold);margin-bottom:8px;}
+.perm-desc{font-size:13px;color:rgba(255,255,255,.55);line-height:1.85;margin-bottom:22px;}
+.btn-perm{padding:13px 30px;background:linear-gradient(135deg,var(--gold-deep),var(--gold));border:none;border-radius:12px;color:#1a0e00;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Serif Thai',serif;}
+#loading-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.9);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.loading-ring{width:46px;height:46px;border:3px solid rgba(242,196,107,.18);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:13px;color:var(--gold);}
+.lantern{position:fixed;pointer-events:none;z-index:4;animation:rise linear infinite;opacity:0;}
+@keyframes rise{0%{opacity:0;transform:translateY(0) translateX(0);}10%{opacity:.8;}80%{opacity:.5;}100%{opacity:0;transform:translateY(-100vh) translateX(var(--drift));}}
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+  <div class="loading-ring"></div>
+  <div class="loading-text" id="loading-text">กำลังโหลด...</div>
+</div>
+
+<div id="permission-overlay">
+  <div class="perm-icon">📷</div>
+  <div class="perm-title">ขออนุญาตใช้กล้อง</div>
+  <div class="perm-desc">เพื่อแสดงบรรยากาศกลางคืนซ้อนทับโลกจริง<br>กรุณาอนุญาตการเข้าถึงกล้อง</div>
+  <button class="btn-perm" id="btn-grant">อนุญาตและเริ่ม AR</button>
+</div>
+
+<div id="screen-landing">
+  <div class="stars" id="stars"></div>
+  <div class="shrine-icon">🏮</div>
+  <div class="landing-title">ส่องกลางคืน AR<br>ศาลเจ้าปึงเถ่ากงม่า</div>
+  <div class="landing-sub">Pueng Thao Kong Ma Shrine · Night AR</div>
+  <div class="landing-desc">ส่องกล้องรอบๆ ศาลเจ้า<br>เพื่อเห็นบรรยากาศงานโคมไฟกลางคืน<br>ซ้อนทับในโลกจริง 360°</div>
+  <div class="divider"><span>✦</span></div>
+  <div class="btn-group">
+    <button class="btn-ar btn-ar-main" id="btn-inside"><span>🏛️</span><span>ภายในศาลเจ้า · กลางคืน</span></button>
+    <button class="btn-ar btn-ar-outside" id="btn-outside"><span>🌙</span><span>ภายนอกศาลเจ้า · กลางคืน</span></button>
+    <button class="btn-gyro" id="btn-gyro">📡 ไม่ใช้กล้อง · ดูผ่าน Gyroscope</button>
+  </div>
+</div>
+
+<div id="screen-ar">
+  <video id="camera-video" autoplay playsinline muted></video>
+  <div id="pano-overlay"><div id="pano-overlay-inner" style="width:100%;height:100%"></div></div>
+  <div id="pano-container"><div id="pano-main" style="width:100%;height:100%"></div></div>
+  <div id="gyro-label">📡 โหมด Gyroscope · ไม่ใช้กล้อง</div>
+</div>
+
+<div id="ar-hud">
+  <div class="hud-badge"><div class="hud-dot"></div>AR LIVE</div>
+  <div class="hud-title" id="hud-title">ภายในศาลเจ้า</div>
+</div>
+<button id="btn-close-ar">✕ ปิด</button>
+<div id="compass-bar">🧭 <span id="compass-text">กำลังรับทิศ...</span></div>
+<div id="scene-selector">
+  <button class="scene-btn active" id="btn-s-inside">🏛️ ภายใน</button>
+  <button class="scene-btn" id="btn-s-outside">🌙 ภายนอก</button>
+</div>
+<div id="opacity-control">
+  <span class="op-label">☀️</span>
+  <input type="range" id="opacity-slider" min="20" max="100" value="85">
+  <span class="op-label">🌙</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script>
+/* ============================================================
+   CONFIG — แก้ค่าตรงนี้เท่านั้น
+   ============================================================ */
+
+// ทิศที่ประตูหันออก วัดด้วย compass
+// ยืนนอกศาลเจ้า หันหน้าเข้าประตู → ดูตัวเลข compass
+const DOOR_BEARING = 45; // 45° = Northeast (วัดได้จริง)
+
+const SCENES = {
+  inside: {
+    name: 'ภายในศาลเจ้า · กลางคืน',
+    pano: 'pano/pano_inside_night.jpg', // TODO: ใส่ไฟล์จริง
+    vaov: 100, // vertical field of view — ปรับถ้าภาพยืดหรือแบน
+  },
+  outside: {
+    name: 'ภายนอกศาลเจ้า · กลางคืน',
+    pano: 'pano/pano_front_night.jpg', // TODO: ใส่ไฟล์จริง
+    vaov: 100,
+  }
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentScene = 'inside';
+let gyroOnly = false;
+let viewer = null;
+let cameraStream = null;
+let compassHandler = null;
+
+/* ============================================================
+   STARS + LANTERNS
+   ============================================================ */
+const starsEl = document.getElementById('stars');
+for(let i=0;i<80;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const sz=Math.random()*2.5+1;
+  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:-${Math.random()*5}s;`;
+  starsEl.appendChild(s);
+}
+setInterval(()=>{
+  const el=document.createElement('div');
+  el.className='lantern';
+  el.textContent=Math.random()>.5?'🏮':'✨';
+  el.style.cssText=`left:${10+Math.random()*80}%;bottom:-40px;font-size:${14+Math.random()*14}px;--drift:${(Math.random()-.5)*80}px;animation-duration:${7+Math.random()*8}s;animation-delay:${Math.random()*4}s;`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),16000);
+},1500);
+
+/* ============================================================
+   PANNELLUM
+   ============================================================ */
+function initViewer(containerId, scene, yaw=0, pitch=0){
+  return pannellum.viewer(containerId,{
+    type:'equirectangular',
+    panorama: scene.pano,
+    autoLoad:true,autoRotate:0,
+    showZoomCtrl:false,showFullscreenCtrl:false,
+    mouseZoom:false,touchPanSpeedCoeffFactor:1,
+    hfov:90, vaov: scene.vaov||100,
+    pitch:pitch, yaw:yaw,
+    strings:{loadButtonLabel:'โหลดภาพ',loadingLabel:'กำลังโหลด...'}
+  });
+}
+
+/* ============================================================
+   COMPASS → YAW
+
+   หลักการ:
+   - e.alpha  = ทิศที่มือถือหันไปจริงๆ (0-360° นับจากเหนือ)
+   - DOOR_BEARING = ทิศที่ประตูหันออก (45°)
+   - yaw 0°   = ประตูอยู่ตรงกลางรูป panorama
+
+   สูตร: yaw = DOOR_BEARING - alpha
+   
+   ตัวอย่าง:
+   หันไปทิศ 45° (ทิศประตู)  → yaw = 45-45 =   0° → เห็นประตู ✅
+   หันไปทิศ 135°             → yaw = 45-135 = -90° → เห็นซ้ายประตู
+   หันไปทิศ 225°             → yaw = 45-225 = -180° → เห็นด้านหลัง
+   ============================================================ */
+function compassToYaw(alpha){
+  let yaw = DOOR_BEARING - alpha;
+  while(yaw > 180) yaw -= 360;
+  while(yaw < -180) yaw += 360;
+  return yaw;
+}
+
+function startCompass(containerId, scene){
+  if(!window.DeviceOrientationEvent){
+    document.getElementById('compass-text').textContent='ไม่รองรับ compass';
+    return;
+  }
+
+  const attach = () => {
+    const bar = document.getElementById('compass-bar');
+    bar.style.display = 'block';
+    setTimeout(()=>{ bar.style.display='none'; }, 6000);
+
+    // รอ event แรกมาก่อน → init viewer ด้วย yaw ที่ถูกต้อง → แล้วค่อย update ต่อเนื่อง
+    let initialized = false;
+
+    compassHandler = (e) => {
+      if(e.alpha===null) return;
+      const yaw = compassToYaw(e.alpha);
+      const pitch = Math.max(-85, Math.min(85, (e.beta||0) - 90));
+
+      if(!initialized){
+        initialized = true;
+        viewer = initViewer(containerId, scene, yaw, pitch);
+      } else {
+        try{ viewer.setYaw(yaw,false); viewer.setPitch(pitch,false); }catch(err){}
+      }
+
+      document.getElementById('compass-text').textContent=
+        `${Math.round(e.alpha)}° → yaw ${Math.round(yaw)}°`;
+    };
+
+    window.addEventListener('deviceorientation', compassHandler);
+  };
+
+  // iOS 13+ ต้องขอ permission จาก user gesture
+  if(typeof DeviceOrientationEvent.requestPermission==='function'){
+    DeviceOrientationEvent.requestPermission()
+      .then(r=>{
+        if(r==='granted') attach();
+        else alert('กรุณาไปที่ Settings → Safari → เปิด Motion & Orientation Access');
+      })
+      .catch(console.error);
+  } else {
+    attach();
+  }
+}
+
+function stopCompass(){
+  if(compassHandler){
+    window.removeEventListener('deviceorientation',compassHandler);
+    compassHandler=null;
+  }
+}
+
+/* ============================================================
+   CAMERA
+   ============================================================ */
+async function openCamera(){
+  setLoading(true,'กำลังเปิดกล้อง...');
+  try{
+    let stream;
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{exact:'environment'}},audio:false});
+    }catch(e){
+      stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+    }
+    cameraStream=stream;
+    const vid=document.getElementById('camera-video');
+    vid.srcObject=stream; vid.style.display='block';
+    setLoading(false);
+    return true;
+  }catch(e){
+    setLoading(false);
+    console.warn('Camera:',e.name,e.message);
+    return false;
+  }
+}
+
+/* ============================================================
+   START / CLOSE / SWITCH
+   ============================================================ */
+async function startAR(scene, noCamera){
+  currentScene=scene; gyroOnly=noCamera;
+  const sc=SCENES[scene];
+  document.getElementById('screen-landing').style.display='none';
+  document.getElementById('screen-ar').style.display='block';
+  document.getElementById('ar-hud').style.display='flex';
+  document.getElementById('btn-close-ar').style.display='block';
+  document.getElementById('scene-selector').style.display='flex';
+  document.getElementById('hud-title').textContent=sc.name;
+
+  if(noCamera){
+    document.getElementById('pano-container').style.display='block';
+    document.getElementById('gyro-label').style.display='block';
+    setLoading(true,'กำลังโหลดภาพ...');
+    setTimeout(()=>{ startCompass('pano-main',sc); setLoading(false); },100);
+  } else {
+    const camOk=await openCamera();
+    if(!camOk){ document.getElementById('permission-overlay').style.display='flex'; return; }
+    document.getElementById('pano-overlay').style.display='block';
+    document.getElementById('opacity-control').style.display='flex';
+    setLoading(true,'กำลังโหลดภาพ...');
+    setTimeout(()=>{ startCompass('pano-overlay-inner',sc); setLoading(false); },100);
+  }
+}
+
+function closeAR(){
+  stopCompass();
+  if(cameraStream){ cameraStream.getTracks().forEach(t=>t.stop()); cameraStream=null; }
+  if(viewer){ try{viewer.destroy();}catch(e){} viewer=null; }
+  const vid=document.getElementById('camera-video');
+  vid.srcObject=null; vid.style.display='none';
+  ['pano-overlay','pano-container','screen-ar','ar-hud','scene-selector','opacity-control']
+    .forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('gyro-label').style.display='none';
+  document.getElementById('btn-close-ar').style.display='none';
+  document.getElementById('screen-landing').style.display='flex';
+}
+
+function switchScene(scene){
+  if(!viewer||scene===currentScene) return;
+  currentScene=scene;
+  stopCompass();
+  try{viewer.destroy();}catch(e){}
+  document.getElementById('hud-title').textContent=SCENES[scene].name;
+  document.querySelectorAll('.scene-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`btn-s-${scene}`).classList.add('active');
+  const cid=gyroOnly?'pano-main':'pano-overlay-inner';
+  setLoading(true,'กำลังโหลดภาพ...');
+  setTimeout(()=>{ startCompass(cid,SCENES[scene]); setLoading(false); },100);
+}
+
+function setLoading(show,text=''){
+  document.getElementById('loading-overlay').style.display=show?'flex':'none';
+  if(text) document.getElementById('loading-text').textContent=text;
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+document.getElementById('btn-inside').addEventListener('click',()=>startAR('inside',false));
+document.getElementById('btn-outside').addEventListener('click',()=>startAR('outside',false));
+document.getElementById('btn-gyro').addEventListener('click',()=>startAR('inside',true));
+document.getElementById('btn-close-ar').addEventListener('click',closeAR);
+document.getElementById('btn-s-inside').addEventListener('click',()=>switchScene('inside'));
+document.getElementById('btn-s-outside').addEventListener('click',()=>switchScene('outside'));
+document.getElementById('btn-grant').addEventListener('click',async()=>{
+  document.getElementById('permission-overlay').style.display='none';
+  await startAR(currentScene,false);
+});
+document.getElementById('opacity-slider').addEventListener('input',function(){
+  document.getElementById('pano-overlay').style.opacity=this.value/100;
+});
+</script>
+</body>
+</html>

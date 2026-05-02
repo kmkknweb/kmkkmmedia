@@ -640,7 +640,63 @@ filter:blur(14px);
   }
 }
 
+#btn-vr-mode{
+  position:fixed;
+  right:14px;
+  bottom:150px;
+  z-index:26;
+  background:rgba(0,0,0,.7);
+  border:1px solid rgba(242,196,107,.35);
+  color:#f2c46b;
+  border-radius:22px;
+  padding:8px 14px;
+  font-size:12px;
+  font-family:'Noto Serif Thai',serif;
+  display:none;
+}
 
+#vr-screen{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  background:#000;
+  display:none;
+}
+
+#vr-left,
+#vr-right{
+  position:absolute;
+  top:0;
+  width:50%;
+  height:100%;
+}
+
+#vr-left{left:0;}
+#vr-right{right:0;}
+
+#vr-screen::after{
+  content:'';
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:1px;
+  background:rgba(255,255,255,.25);
+  z-index:101;
+}
+
+#btn-exit-vr{
+  position:fixed;
+  top:14px;
+  right:14px;
+  z-index:110;
+  background:rgba(0,0,0,.65);
+  border:1px solid rgba(255,255,255,.25);
+  color:#fff;
+  border-radius:20px;
+  padding:8px 14px;
+  font-size:12px;
+}
   
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;600;700&family=Cinzel:wght@600&display=swap" rel="stylesheet">
@@ -764,7 +820,13 @@ filter:blur(14px);
   <span class="opacity-label">🌙</span>
 </div>
 
+<button id="btn-vr-mode">🥽 VR</button>
 
+<div id="vr-screen">
+  <div id="vr-left"></div>
+  <div id="vr-right"></div>
+  <button id="btn-exit-vr">✕ ออก VR</button>
+</div>
   
 <div id="sacred-effect">
   <div class="sacred-glow"></div>
@@ -886,6 +948,71 @@ vaov: 90,
 let deviceYawAtCalib = null;  // yaw ของ gyro ตอนที่กด calibrate
 let gyroHandler = null;
 
+/* Vr */
+let vrLeftViewer = null;
+let vrRightViewer = null;
+let vrCompassHandler = null;
+
+function startVR(){
+  stopCompass();
+
+  if(viewer){
+    try{ viewer.destroy(); }catch(e){}
+    viewer = null;
+  }
+
+  document.getElementById('vr-screen').style.display = 'block';
+
+  const sc = SCENES[currentScene];
+
+  vrLeftViewer = initViewer('vr-left', sc, 0, 0);
+  vrRightViewer = initViewer('vr-right', sc, 0, 0);
+
+  vrCompassHandler = (e) => {
+    if(e.alpha === null) return;
+
+    const yaw = compassToYaw(e.alpha);
+    const pitch = Math.max(-85, Math.min(85, (e.beta || 0) - 90));
+
+    try{
+      vrLeftViewer.setYaw(yaw - 2, false);
+      vrRightViewer.setYaw(yaw + 2, false);
+
+      vrLeftViewer.setPitch(pitch, false);
+      vrRightViewer.setPitch(pitch, false);
+    }catch(err){}
+  };
+
+  window.addEventListener('deviceorientation', vrCompassHandler);
+}
+
+function exitVR(){
+  if(vrCompassHandler){
+    window.removeEventListener('deviceorientation', vrCompassHandler);
+    vrCompassHandler = null;
+  }
+
+  if(vrLeftViewer){
+    try{ vrLeftViewer.destroy(); }catch(e){}
+    vrLeftViewer = null;
+  }
+
+  if(vrRightViewer){
+    try{ vrRightViewer.destroy(); }catch(e){}
+    vrRightViewer = null;
+  }
+
+  document.getElementById('vr-screen').style.display = 'none';
+
+  const cid = gyroOnly ? 'pano-main' : 'pano-overlay-inner';
+  startCompass(cid, SCENES[currentScene]);
+}
+
+  /* vr closed */
+
+
+  
+
 async function requestGyroPermission(){
   /* iOS 13+ ต้องขอ permission DeviceOrientation ก่อน */
   if(typeof DeviceOrientationEvent !== 'undefined' &&
@@ -999,6 +1126,7 @@ async function startAR(scene, gyroOnly){
   document.getElementById('screen-ar').style.display = 'block';
   document.getElementById('ar-hud').style.display = 'flex';
   document.getElementById('btn-close-ar').style.display = 'block';
+  document.getElementById('btn-vr-mode').style.display='block';
   document.getElementById('opacity-control').style.display = gyroOnly ? 'none' : 'flex';
   document.getElementById('scene-selector').style.display = 'flex';
   document.getElementById('hud-scene-name').textContent = sceneData.name;
